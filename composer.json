@@ -9,7 +9,7 @@
             "email": "webmaster100500@ya.ru"
         }
     ] ,
-    "minimum-stability": "stable" ,
+    "minimum-stability": "dev" ,
     "require":           {
         "php": ">=7.1",
         "symfony/finder": "3.4.*"
