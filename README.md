@@ -23,4 +23,4 @@ run `unused_scanner /path/to/configuration/file/scanner_config.php`
 
 wait for result..
 
-![alt text](unused_scanner.png)
+![Demo screenshot](unused.png)

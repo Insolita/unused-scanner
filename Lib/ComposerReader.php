@@ -27,12 +27,7 @@ final class ComposerReader
     
     private function readComposerJson(): array
     {
-        $path = $this->config->getComposerJsonPath();
-        if (!mb_strpos($path, 'composer.json')) {
-            $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'composer.json';
-        }
-        $file = file_get_contents($path);
-        
+        $file = file_get_contents($this->config->getComposerJsonPath());
         return $file ? json_decode($file, true) : [];
     }
 }
