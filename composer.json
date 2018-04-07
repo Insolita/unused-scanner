@@ -1,0 +1,25 @@
+{
+    "name":              "insolita/unused-scanner" ,
+    "description":       "Detect unused composer dependencies" ,
+    "type":              "library" ,
+    "license":           "mit" ,
+    "authors":           [
+        {
+            "name":  "insolita" ,
+            "email": "webmaster100500@ya.ru"
+        }
+    ] ,
+    "minimum-stability": "stable" ,
+    "require":           {
+        "php": ">=7.1",
+        "symfony/finder": "3.4.*"
+    },
+    "bin": [
+        "unused_scanner"
+    ],
+    "autoload":          {
+        "psr-4": {
+            "insolita\\Scanner\\": ""
+        }
+    }
+}

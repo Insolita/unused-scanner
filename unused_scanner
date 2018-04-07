@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Project scanner for detect unused composer dependencies
+ * Usage:
+ *  - composer global require insolita/unused-scanner
+ *  - prepare config like in example @see scanner_config.example.php
+ *  - php unused_scanner /path/to/scanner_config.php
+**/
+if (file_exists(__DIR__.'/vendor/autoload.php')) {
+    require __DIR__.'/vendor/autoload.php';
+} else {
+    require __DIR__.'/../../autoload.php';
+}
+
+use insolita\Scanner\Lib\Scanner;
+use insolita\Scanner\Lib\Config;
+use insolita\Scanner\Lib\ComposerReader;
+use insolita\Scanner\Lib\DependencyNamespaceMap;
+use Symfony\Component\Finder\Finder;
+
+if (!isset($argv[1])) {
+    echo 'Missing required argument - path to config' . PHP_EOL;
+    exit(1);
+}
+$nextDirectoryCallback = function ($directory){
+    echo PHP_EOL.' - Scan '.$directory.PHP_EOL;
+};
+$progressCallback = function ($done, $total) {
+    $width = 60;
+    $percentage = round(($done * 100) / $total);
+    $bar = round(($width * $percentage) / 100);
+    echo sprintf("%s%%[%s>%s]\r", $percentage, str_repeat("=", $bar), str_repeat(" ", $width-$bar));
+};
+try{
+    $params = require_once $argv[1];
+    $config = Config::create($params);
+    
+    echo ' - config prepared'.PHP_EOL;
+    
+    $dependencies = (new ComposerReader($config))->fetchDependencies();
+    $searchMap = (new DependencyNamespaceMap($config, $dependencies))->build();
+    
+    echo ' - search patterns prepared'.PHP_EOL;
+
+    $scanResult = (new Scanner($searchMap, $config, new Finder(), $nextDirectoryCallback, $progressCallback))->scan();
+    $result = array_diff(array_unique(array_values($searchMap)), $scanResult);
+    if(empty($result)){
+        echo PHP_EOL.'Unused dependencies not found!'.PHP_EOL;
+    }else{
+        echo PHP_EOL.'Unused dependencies found!'.PHP_EOL;
+        print_r(array_values($result));
+        echo PHP_EOL;
+    }
+    exit(0);
+}catch (\Throwable $e){
+    echo 'Error! '.$e->getMessage().PHP_EOL;
+    echo $e->getTraceAsString().PHP_EOL;
+    exit(1);
+}
