@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
+
 namespace insolita\Scanner\Lib;
 
-use function str_replace;
+use function is_null;
 use Symfony\Component\Finder\Finder;
 use function array_filter;
 use function array_merge;
@@ -13,6 +14,7 @@ use function is_dir;
 use function is_file;
 use function preg_match;
 use function preg_match_all;
+use function str_replace;
 
 final class Scanner
 {
@@ -94,8 +96,11 @@ final class Scanner
     
     private function scanDirectory(string $directory)
     {
-        $files = $this->finder->files()->in([$directory])->name('*.php')
-            ->exclude($this->config->getExcludeDirectories());
+        $finder = clone $this->finder;
+        $files = $finder->files()->in([$directory])->exclude($this->config->getExcludeDirectories());
+        foreach ($this->config->getExtensions() as $extension) {
+            $files->name($extension);
+        }
         $total = $files->count();
         $iteration = 0;
         foreach ($files as $file) {
@@ -118,18 +123,27 @@ final class Scanner
         preg_match_all('/use\s{1,}(?<ns>[\w\\\\]+)(;|\s)/u', $fileContent, $useDeclarations);
         $useDeclarations = $useDeclarations['ns'] ?? [];
         foreach ($this->searchPatterns as $definition => $packageName) {
-            if (!in_array($packageName, $usageFounds)) {
-                $pattern = "/(\s{0,}|\'|\")\\\\" . str_replace('\\', '\\\\', trim($definition, '\\')) . "/";
-                $isPatternPresent = preg_match($pattern, $fileContent);
-                if ($isPatternPresent) {
-                    $usageFounds[] = $packageName;
-                } else {
-                    foreach ($useDeclarations as $match) {
-                        if (mb_stripos($match, $definition) === 0) {
-                            $usageFounds[] = $packageName;
-                        }
+            if (in_array($packageName, $usageFounds)) {
+                continue;
+            }
+            $preparedDefinition = str_replace('\\', '\\\\', $definition);
+            $pattern = "/(\s{1,}|>|=|\'|\")\\\\{$preparedDefinition}/";
+            $isMatched = !is_null($this->config->getCustomMatch())
+                ?call_user_func($this->config->getCustomMatch(), $definition, $packageName, $fileContent)
+                :false;
+            if(!$isMatched){
+                $isMatched = preg_match($pattern, $fileContent);
+            }
+            if(!$isMatched){
+                foreach ($useDeclarations as $match) {
+                    if (mb_stripos($match, $definition) === 0) {
+                        $isMatched = true;
+                        break;
                     }
                 }
+            }
+            if($isMatched){
+                $usageFounds[] = $packageName;
             }
         }
         $this->registerFounds($usageFounds);

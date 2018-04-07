@@ -5,21 +5,19 @@ namespace insolita\Scanner\Lib;
 
 use insolita\Scanner\Exceptions\InvalidConfigException;
 use const DIRECTORY_SEPARATOR;
+use function is_callable;
 
 final class Config
 {
     private $composerJsonPath;
-    
     private $vendorPath;
-    
     private $scanDirectories = [];
-    
     private $excludeDirectories = [];
     
     private $scanFiles = [];
-    
     private $requireDev = false;
-    
+    private $extensions = ['*.php'];
+    private $customMatch = null;
     public function __construct(string $composerJsonPath, string $vendorPath, array $scanDirectories)
     {
         if (!mb_strpos($composerJsonPath, 'composer.json')) {
@@ -97,6 +95,44 @@ final class Config
     }
     
     /**
+     * @return array
+     */
+    public function getExtensions(): array
+    {
+        return $this->extensions;
+    }
+    
+    /**
+     * @param array $extensions
+     *
+     * @return Config
+     */
+    public function setExtensions(array $extensions): Config
+    {
+        $this->extensions = $extensions;
+        return $this;
+    }
+    
+    /**
+     * @return null|callable
+     */
+    public function getCustomMatch():?callable
+    {
+        return $this->customMatch;
+    }
+    
+    /**
+     * @param callable $customMatch
+     *
+     * @return Config
+     */
+    public function setCustomMatch(callable $customMatch)
+    {
+        $this->customMatch = $customMatch;
+        return $this;
+    }
+    
+    /**
      * @param array $data
      *
      * @return \insolita\Scanner\Lib\Config
@@ -116,6 +152,12 @@ final class Config
         }
         if (isset($data['excludeDirectories'])) {
             $config->setExcludeDirectories($data['excludeDirectories']);
+        }
+        if (isset($data['extensions']) && !empty($data['extensions'])) {
+            $config->setExtensions($data['extensions']);
+        }
+        if (isset($data['customMatch']) && is_callable($data['customMatch'])) {
+            $config->setCustomMatch($data['customMatch']);
         }
         return $config;
     }

@@ -4,12 +4,13 @@ $projectPath = __DIR__ . '/my/project/';
 /**
  * Array of full directories path for scan;
  * Scan will be recursive
+ * Put directories with most intensive imports in top of list for more quick result
  * @see http://api.symfony.com/4.0/Symfony/Component/Finder/Finder.html#method_in
 **/
 $scanDirectories = [
+    $projectPath . '/config/',
     $projectPath . '/Acme/',
     $projectPath . '/controllers/',
-    $projectPath . '/config/',
     $projectPath . '/console/',
     $projectPath . '/models/',
     $projectPath . '/modules/',
@@ -34,5 +35,10 @@ return [
     'scanDirectories' => $scanDirectories,                 //required
     'excludeDirectories' => $excludeDirectories,           //optional
     'scanFiles' => $scanFiles,                             //optional
-    'requireDev' => false   //optional, Check composer require-dev section, default false
+    'extensions' => ['*.php'],                             //optional
+    'requireDev' => false,   //optional, Check composer require-dev section, default false
+    'customMatch'=> function($definition, $packageName, $fileContent){  //optional
+         //custom logic, should return boolean: true if $definition presented in $fileContent, otherwise false
+         return false;
+    }
 ];
