@@ -12,7 +12,7 @@
     "minimum-stability": "dev" ,
     "require":           {
         "php": ">=7.1",
-        "symfony/finder": "3.4.*"
+        "symfony/finder": "^3.4|^4.0"
     },
     "bin": [
         "unused_scanner"
