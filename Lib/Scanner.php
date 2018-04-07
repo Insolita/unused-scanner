@@ -133,16 +133,13 @@ final class Scanner
             }
         }
         $this->registerFounds($usageFounds);
-        unset($usageFounds);
     }
     
-    private function registerFounds(array $usageFounds): array
+    private function registerFounds(array $usageFounds)
     {
         $this->usageFounds = array_merge($this->usageFounds, $usageFounds);
         $this->searchPatterns = array_filter($this->searchPatterns, function ($packageName) use (&$usageFounds) {
             return !in_array($packageName, $usageFounds);
         });
-        return [];
     }
-    
 }
