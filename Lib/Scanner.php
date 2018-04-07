@@ -119,7 +119,7 @@ final class Scanner
         $useDeclarations = $useDeclarations['ns'] ?? [];
         foreach ($this->searchPatterns as $definition => $packageName) {
             if (!in_array($packageName, $usageFounds)) {
-                $pattern = "/\s{1,}\\\\" . str_replace('\\', '\\\\', trim($definition, '\\')) . "/";
+                $pattern = "/(\s{0,}|\'|\")\\\\" . str_replace('\\', '\\\\', trim($definition, '\\')) . "/";
                 $isPatternPresent = preg_match($pattern, $fileContent);
                 if ($isPatternPresent) {
                     $usageFounds[] = $packageName;
