@@ -1,12 +1,21 @@
 # Project scanner for detect unused composer dependencies
 
-## Installation
+### Installation
 
 `composer global require insolita/unused-scanner`
 
-## Usage
-prepare configuration file, see [scanner_config.example.php](scanner_config.example.php)
-put it in project root
+Ensure that your ~/.composer/vendor/bin directory declared in $PATH
+`echo $PATH`
+if not - you should add it in ~/.bashrc or ~/.profile
 
-run `php unused_scanner /path/to/configuration/file/scanner_config.php`
+
+### Usage
+prepare configuration file, see [scanner_config.example.php](scanner_config.example.php)
+put it in project root (or other place)
+
+run `composer dumpautoload` in your project directory
+run `unused_scanner /path/to/configuration/file/scanner_config.php`
+
 wait for result..
+
+![alt text](unused_scanner.png)

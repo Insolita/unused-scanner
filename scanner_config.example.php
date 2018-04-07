@@ -1,5 +1,11 @@
 <?php
-$projectPath = __DIR__.'/my/project/';
+$projectPath = __DIR__ . '/my/project/';
+
+/**
+ * Array of full directories path for scan;
+ * Scan will be recursive
+ * @see http://api.symfony.com/4.0/Symfony/Component/Finder/Finder.html#method_in
+**/
 $scanDirectories = [
     $projectPath . '/Acme/',
     $projectPath . '/controllers/',
@@ -9,14 +15,24 @@ $scanDirectories = [
     $projectPath . '/modules/',
     $projectPath . '/services/',
 ];
+
 $scanFiles = [
-    $projectPath.'/autocomplete.php'
+    $projectPath . '/autocomplete.php',
+];
+/**
+ * Names relative to ones of scanDirectories
+ *
+ * @see http://api.symfony.com/4.0/Symfony/Component/Finder/Finder.html#method_exclude
+ **/
+$excludeDirectories = [
+    'runtime',
+    'storage/logs',
 ];
 return [
-    'composerJsonPath' => $projectPath . '/composer.json',
-    'vendorPath' => $projectPath . '/vendor/',
-    'scanDirectories' => $scanDirectories,  //Directories will be scanned recursive
-    'scanFiles' => $scanFiles,   //Array of files that should be scanned
-    'requireDev'=>false   //Check composer require-dev section
+    'composerJsonPath' => $projectPath . '/composer.json', //required
+    'vendorPath' => $projectPath . '/vendor/',             //required
+    'scanDirectories' => $scanDirectories,                 //required
+    'excludeDirectories' => $excludeDirectories,           //optional
+    'scanFiles' => $scanFiles,                             //optional
+    'requireDev' => false   //optional, Check composer require-dev section, default false
 ];
-?>

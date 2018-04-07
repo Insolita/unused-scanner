@@ -94,7 +94,8 @@ final class Scanner
     
     private function scanDirectory(string $directory)
     {
-        $files = $this->finder->files()->in([$directory])->name('*.php');
+        $files = $this->finder->files()->in([$directory])->name('*.php')
+            ->exclude($this->config->getExcludeDirectories());
         $total = $files->count();
         $iteration = 0;
         foreach ($files as $file) {
