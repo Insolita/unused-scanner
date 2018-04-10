@@ -37,7 +37,7 @@ return [
     'scanFiles' => $scanFiles,                             //optional
     'extensions' => ['*.php'],                             //optional
     'requireDev' => false,   //optional, Check composer require-dev section, default false
-    'customMatch'=> function($definition, $packageName, $fileContent){  //optional
+    'customMatch'=> function($definition, $packageName, \Symfony\Component\Finder\SplFileInfo $file){  //optional
          //custom logic, should return boolean: true if $definition presented in $fileContent, otherwise false
          return false;
     }

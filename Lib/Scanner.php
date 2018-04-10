@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
+use function basename;
 use function is_null;
 use Symfony\Component\Finder\Finder;
 use function array_filter;
@@ -15,6 +16,7 @@ use function is_file;
 use function preg_match;
 use function preg_match_all;
 use function str_replace;
+use Symfony\Component\Finder\SplFileInfo;
 
 final class Scanner
 {
@@ -81,8 +83,8 @@ final class Scanner
             $total = count($this->config->getScanFiles());
             foreach ($this->config->getScanFiles() as $iteration => $filename) {
                 if (is_file($filename)) {
-                    $content = file_get_contents($filename);
-                    $this->checkUsage($content);
+                    $file = new SplFileInfo($filename, $filename, basename($filename));
+                    $this->checkUsage($file);
                 }
                 if (empty($this->searchPatterns)) {
                     call_user_func($this->onDirectoryProgress, $total, $total, $filename);
@@ -104,9 +106,8 @@ final class Scanner
         $total = $files->count();
         $iteration = 0;
         foreach ($files as $file) {
-            /**@var \Symfony\Component\Finder\SplFileInfo $file * */
-            $content = $file->getContents();
-            $this->checkUsage($content);
+            /**@var SplFileInfo $file**/
+            $this->checkUsage($file);
             if (empty($this->searchPatterns)) {
                 call_user_func($this->onDirectoryProgress, $total, $total, $file->getRealPath());
                 break;
@@ -117,11 +118,10 @@ final class Scanner
         }
     }
     
-    private function checkUsage(string $fileContent)
+    private function checkUsage(SplFileInfo $file)
     {
         $usageFounds = [];
-        preg_match_all('/use\s{1,}(?<ns>[\w\\\\]+)(;|\s)/u', $fileContent, $useDeclarations);
-        $useDeclarations = $useDeclarations['ns'] ?? [];
+        $fileContent = $file->getContents();
         foreach ($this->searchPatterns as $definition => $packageName) {
             if (in_array($packageName, $usageFounds)) {
                 continue;
@@ -129,18 +129,10 @@ final class Scanner
             $preparedDefinition = str_replace('\\', '\\\\', $definition);
             $pattern = "/[\s\t\n\.\,<=>\'\"\[\(;\\\\]{$preparedDefinition}/";
             $isMatched = !is_null($this->config->getCustomMatch())
-                ?call_user_func($this->config->getCustomMatch(), $definition, $packageName, $fileContent)
+                ?call_user_func($this->config->getCustomMatch(), $definition, $packageName, $file)
                 :false;
             if(!$isMatched){
                 $isMatched = preg_match($pattern, str_replace('\\\\', '\\',$fileContent));
-            }
-            if(!$isMatched){
-                foreach ($useDeclarations as $match) {
-                    if (mb_stripos($match, $definition) === 0) {
-                        $isMatched = true;
-                        break;
-                    }
-                }
             }
             if($isMatched){
                 $usageFounds[] = $packageName;
