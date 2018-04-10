@@ -7,3 +7,4 @@ class InvalidConfigException extends Exception
 {
     
 }
+

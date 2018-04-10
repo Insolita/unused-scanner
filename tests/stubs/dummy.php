@@ -13,6 +13,4 @@ class Foo
             'e'=> Text_Template::class
         ];
     }
-    
-    
 }
