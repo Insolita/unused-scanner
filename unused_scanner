@@ -5,7 +5,8 @@
  * Usage:
  *  - composer global require insolita/unused-scanner
  *  - prepare config like in example @see scanner_config.example.php
- *  - php unused_scanner /path/to/scanner_config.php
+ *  - run 'composer dumpautoload' in project root
+ *  - unused_scanner /path/to/scanner_config.php
  **/
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
@@ -22,4 +23,6 @@ if (!isset($argv[1])) {
 $silentMode = isset($argv[2]) && in_array($argv[2], ['--silent', '-s']);
 
 $exitCode = (new Runner((string)$argv[1], $silentMode))->run();
+
 exit($exitCode);
+

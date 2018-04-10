@@ -1,5 +1,5 @@
 <?php
-$projectPath = getcwd();
+$projectPath = __DIR__;
 return [
     'composerJsonPath' => $projectPath . '/stub_composer.json',
     'vendorPath' => $projectPath . '/../vendor/',
