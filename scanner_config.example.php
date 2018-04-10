@@ -1,5 +1,9 @@
 <?php
+/**
+ *  Set $projectPath = getcwd(); if your put it under project root
+**/
 $projectPath = __DIR__ . '/my/project/';
+
 
 /**
  * Array of full directories path for scan;

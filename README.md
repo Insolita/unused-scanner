@@ -12,6 +12,9 @@ Ensure that your ~/.composer/vendor/bin directory declared in $PATH
 
 if not - you should add it in ~/.bashrc or ~/.profile
 
+### Update
+
+`composer global update`
 
 ### Usage
 
