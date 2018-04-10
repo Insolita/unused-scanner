@@ -37,6 +37,7 @@ return [
     'composerJsonPath' => $projectPath . '/composer.json', //required
     'vendorPath' => $projectPath . '/vendor/',             //required
     'scanDirectories' => $scanDirectories,                 //required
+    
     'excludeDirectories' => $excludeDirectories,           //optional
     'scanFiles' => $scanFiles,                             //optional
     'extensions' => ['*.php'],                             //optional
@@ -44,5 +45,16 @@ return [
     'customMatch'=> function($definition, $packageName, \Symfony\Component\Finder\SplFileInfo $file){  //optional
          //custom logic, should return boolean: true if $definition presented in $fileContent, otherwise false
          return false;
-    }
+    },
+    /**
+     * Report mode options
+     * Report mode enabled, when reportPath value is valid directory path
+     * !!!Note!!! The scanning time and memory usage will be increased when report mode enabled,
+     * it sensitive especially for big projects and  when requireDev option enabled
+     **/
+    'reportPath' => null, //path in directory, where usage report will be stores;
+    //optional, by default, result formatted as json
+    'reportFormatter'=>function(array $report):string{ return print_r($report, false);},
+    //optional, by default - json, set own, if use custom formatter
+    'reportExtension'=>null,
 ];
