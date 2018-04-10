@@ -34,27 +34,62 @@ $excludeDirectories = [
     'storage/logs',
 ];
 return [
-    'composerJsonPath' => $projectPath . '/composer.json', //required
-    'vendorPath' => $projectPath . '/vendor/',             //required
-    'scanDirectories' => $scanDirectories,                 //required
+    /**
+     * Required params
+    **/
+    'composerJsonPath' => $projectPath . '/composer.json',
+    'vendorPath' => $projectPath . '/vendor/',
+    'scanDirectories' => $scanDirectories,
     
-    'excludeDirectories' => $excludeDirectories,           //optional
-    'scanFiles' => $scanFiles,                             //optional
-    'extensions' => ['*.php'],                             //optional
-    'requireDev' => false,   //optional, Check composer require-dev section, default false
-    'customMatch'=> function($definition, $packageName, \Symfony\Component\Finder\SplFileInfo $file){  //optional
-         //custom logic, should return boolean: true if $definition presented in $fileContent, otherwise false
-         return false;
-    },
+    /**
+     * Optional params
+    **/
+    'excludeDirectories' => $excludeDirectories,
+    'scanFiles' => $scanFiles,
+    'extensions' => ['*.php'],
+    'requireDev' => false,   //Check composer require-dev section, default false
+    /**
+     * Optional, custom logic for check is file contains definitions of package
+     *
+     * @example
+     * 'customMatch'=> function($definition, $packageName, \Symfony\Component\Finder\SplFileInfo $file):bool{
+     *         $isPresent = false;
+     *         if($packageName === 'phpunit/phpunit'){
+     *              $isPresent = true;
+     *         }
+     *          if($file->getExtension()==='twig'){
+     *            $isPresent = customCheck();
+     *          }
+     *         return $isPresent;
+     * }
+     **/
+    'customMatch'=> null,
+    
     /**
      * Report mode options
      * Report mode enabled, when reportPath value is valid directory path
      * !!!Note!!! The scanning time and memory usage will be increased when report mode enabled,
      * it sensitive especially for big projects and  when requireDev option enabled
      **/
+    
     'reportPath' => null, //path in directory, where usage report will be stores;
-    //optional, by default, result formatted as json
-    'reportFormatter'=>function(array $report):string{ return print_r($report, false);},
-    //optional, by default - json, set own, if use custom formatter
-    'reportExtension'=>null,
+    
+    /**
+     * Optional custom formatter (by default report stored as json)
+     * $report array format
+     * [
+     *     'packageName'=> [
+     *           'definition'=>['fileNames',...]
+     *           ....
+     *      ]
+     *      ...
+     * ]
+     *
+     * @example
+     *  'reportFormatter'=>function(array $report):string{
+     *     return print_r($report, true);
+     * }
+     **/
+    'reportFormatter'=>null,
+    'reportExtension'=>null, //by default - json, set own, if use custom formatter
 ];
