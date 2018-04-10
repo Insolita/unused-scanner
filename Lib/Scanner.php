@@ -127,12 +127,12 @@ final class Scanner
                 continue;
             }
             $preparedDefinition = str_replace('\\', '\\\\', $definition);
-            $pattern = "/(\s{1,}|>|=|\'|\")\\\\{$preparedDefinition}/";
+            $pattern = "/(\s{1,}|>|=|\'|\"|\\\\|\[){$preparedDefinition}/";
             $isMatched = !is_null($this->config->getCustomMatch())
                 ?call_user_func($this->config->getCustomMatch(), $definition, $packageName, $fileContent)
                 :false;
             if(!$isMatched){
-                $isMatched = preg_match($pattern, $fileContent);
+                $isMatched = preg_match($pattern, str_replace('\\\\', '\\',$fileContent));
             }
             if(!$isMatched){
                 foreach ($useDeclarations as $match) {
