@@ -7,7 +7,7 @@
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
-		processIsolation="false"
+		processIsolation="true"
 		verbose="true"
 		stopOnFailure="false"
 		beStrictAboutOutputDuringTests="false"

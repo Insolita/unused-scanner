@@ -24,9 +24,9 @@ final class Config
             $composerJsonPath = rtrim($composerJsonPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'composer.json';
         }
         $this->composerJsonPath = $composerJsonPath;
-        $this->vendorPath = rtrim($vendorPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->vendorPath = realpath(rtrim($vendorPath, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
         $this->scanDirectories = array_map(function ($path) {
-            return rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            return realpath(rtrim($path, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
         }, $scanDirectories);
     }
     
