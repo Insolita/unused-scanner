@@ -90,7 +90,7 @@ final class Runner
     private function makeDependencyMap(Config $config): array
     {
         $dependencies = (new ComposerReader($config))->fetchDependencies();
-        return (new DependencyNamespaceMap($config, $dependencies))->build();
+        return (new DependencyMapper($config, $dependencies))->build();
     }
     
     private function output(string $message)

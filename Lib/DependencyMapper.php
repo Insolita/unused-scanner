@@ -7,7 +7,7 @@ use function array_reduce;
 use function file_exists;
 use function mb_strpos;
 
-final class DependencyNamespaceMap
+final class DependencyMapper
 {
     /**
      * @var array

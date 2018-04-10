@@ -4,7 +4,7 @@ use insolita\Scanner\Lib\Config;
 class Foo
 {
     /**
-     * @param \insolita\Scanner\Lib\DependencyNamespaceMap $z
+     * @param \insolita\Scanner\Lib\DependencyMapper $z
     **/
     public function bar($z)
     {

@@ -9,7 +9,7 @@ class ScannerTest extends TestCase
 {
     protected static $map
         = [
-            'insolita\Scanner\Lib\DependencyNamespaceMap' => 0,
+            'insolita\Scanner\Lib\DependencyMapper' => 0,
             'insolita\Scanner\Lib\Config' => 1,
             'insolita\Scanner\Lib\ComposerReader' => 2,
             'Symfony\Component\Finder\Exception' => 3,
