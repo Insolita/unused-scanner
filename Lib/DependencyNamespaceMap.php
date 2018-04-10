@@ -61,7 +61,7 @@ final class DependencyNamespaceMap
     public function prepareDependencies(array $dependencies)
     {
         return array_reduce($dependencies, function ($carry, $name) {
-            $carry[$name] = realpath($this->config->getVendorPath() . $name);
+            $carry[$name] = $this->config->getVendorPath($name);
             return $carry;
         }, []);
     }
