@@ -6,6 +6,7 @@ namespace insolita\Scanner\Lib;
 use insolita\Scanner\Exceptions\InvalidConfigException;
 use const DIRECTORY_SEPARATOR;
 use function is_callable;
+use function is_string;
 
 final class Config
 {
@@ -18,6 +19,7 @@ final class Config
     private $requireDev = false;
     private $extensions = ['*.php'];
     private $customMatch = null;
+    private $reportPath = null;
     public function __construct(string $composerJsonPath, string $vendorPath, array $scanDirectories)
     {
         if (!mb_strpos($composerJsonPath, 'composer.json')) {
@@ -133,6 +135,22 @@ final class Config
     }
     
     /**
+     * @param string $reportPath
+     *
+     * @return Config
+     */
+    public function setReportPath(string $reportPath)
+    {
+        $this->reportPath = $reportPath;
+        return $this;
+    }
+    
+    public function getReportPath():?string
+    {
+        return $this->reportPath;
+    }
+    
+    /**
      * @param array $data
      *
      * @return \insolita\Scanner\Lib\Config
@@ -158,6 +176,9 @@ final class Config
         }
         if (isset($data['customMatch']) && is_callable($data['customMatch'])) {
             $config->setCustomMatch($data['customMatch']);
+        }
+        if (isset($data['reportPath']) && is_string($data['reportPath'])) {
+            $config->setReportPath($data['reportPath']);
         }
         return $config;
     }
