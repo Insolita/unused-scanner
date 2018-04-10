@@ -6,7 +6,9 @@ namespace insolita\Scanner\Lib;
 use insolita\Scanner\Exceptions\InvalidConfigException;
 use const DIRECTORY_SEPARATOR;
 use function is_callable;
+use function is_dir;
 use function is_string;
+use function rtrim;
 
 final class Config
 {
@@ -20,6 +22,9 @@ final class Config
     private $extensions = ['*.php'];
     private $customMatch = null;
     private $reportPath = null;
+    private $reportExtension = '.json';
+    private $reportFormatter = null;
+    
     public function __construct(string $composerJsonPath, string $vendorPath, array $scanDirectories)
     {
         if (!mb_strpos($composerJsonPath, 'composer.json')) {
@@ -151,6 +156,38 @@ final class Config
     }
     
     /**
+     * @param callable $reportFormatter
+     *
+     * @return Config
+     */
+    public function setReportFormatter(callable $reportFormatter)
+    {
+        $this->reportFormatter = $reportFormatter;
+        return $this;
+    }
+    
+    public function getReportFormatter():?callable
+    {
+        return $this->reportFormatter;
+    }
+    
+    /**
+     * @param string $reportExtension
+     */
+    public function setReportExtension(string $reportExtension): void
+    {
+        $this->reportExtension = $reportExtension;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getReportExtension(): string
+    {
+        return $this->reportExtension;
+    }
+    
+    /**
      * @param array $data
      *
      * @return \insolita\Scanner\Lib\Config
@@ -177,8 +214,15 @@ final class Config
         if (isset($data['customMatch']) && is_callable($data['customMatch'])) {
             $config->setCustomMatch($data['customMatch']);
         }
-        if (isset($data['reportPath']) && is_string($data['reportPath'])) {
-            $config->setReportPath($data['reportPath']);
+        if (isset($data['reportPath']) && is_dir($data['reportPath'])) {
+            $path = rtrim($data['reportPath'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+            $config->setReportPath($path);
+        }
+        if (isset($data['reportFormatter']) && is_callable($data['reportFormatter'])) {
+            $config->setReportFormatter($data['reportFormatter']);
+        }
+        if (isset($data['reportExtension']) && is_string($data['reportExtension'])) {
+            $config->setReportExtension('.'.ltrim($data['reportExtension'], '.'));
         }
         return $config;
     }

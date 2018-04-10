@@ -3,8 +3,15 @@ declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
+use Carbon\Carbon;
 use insolita\Scanner\Exceptions\InvalidConfigException;
 use Symfony\Component\Finder\Finder;
+use function call_user_func;
+use function file_put_contents;
+use function is_null;
+use function json_encode;
+use function sprintf;
+use const JSON_PRETTY_PRINT;
 
 final class Runner
 {
@@ -31,6 +38,9 @@ final class Runner
         $this->silentMode = $silentMode;
     }
     
+    /**
+     * @return int
+     */
     public function run()
     {
         try {
@@ -45,14 +55,16 @@ final class Runner
             return $exitCode;
         }
         try {
-            $scanResult = (new Scanner($map, $config, new Finder(), [$this, 'onNextDirectory'], [$this, 'onProgress']))
-                ->scan();
+            $scanner = (new Scanner($map, $config, new Finder(), [$this, 'onNextDirectory'], [$this, 'onProgress']));
+            $scanResult = $scanner->scan();
         } catch (\Throwable $e) {
             echo 'Error! ' . $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
             return self::SCANNING_ERROR_CODE;
         }
-        
+        if (!is_null($config->getReportPath())) {
+            $this->storeReport($scanner->getUsageReport(), $config);
+        }
         return $this->scanReport($map, $scanResult);
     }
     
@@ -64,7 +76,7 @@ final class Runner
     public function onProgress(int $done, int $total)
     {
         $width = 60;
-        $percentage = round(($done * 100) / ($total <=0?1:$total));
+        $percentage = round(($done * 100) / ($total <= 0 ? 1 : $total));
         $bar = (int)round(($width * $percentage) / 100);
         $this->output(sprintf("%s%%[%s>%s]\r", $percentage, str_repeat("=", $bar), str_repeat(" ", $width - $bar)));
     }
@@ -88,7 +100,7 @@ final class Runner
         }
     }
     
-    private function scanReport(array $map, array $scanResult):int
+    private function scanReport(array $map, array $scanResult): int
     {
         $result = array_values(array_diff(array_unique(array_values($map)), $scanResult));
         if (empty($result)) {
@@ -101,5 +113,19 @@ final class Runner
             });
             return self::HAS_UNUSED_CODE;
         }
+    }
+    
+    private function storeReport(array $usageReport, Config $config)
+    {
+        $formattedReport = !is_null($config->getReportFormatter())
+            ? (string)call_user_func($config->getReportFormatter(), $usageReport)
+            : json_encode($usageReport, JSON_PRETTY_PRINT);
+        $reportFileName = sprintf(
+            '%spackage_usage_report_%s%s',
+            $config->getReportPath(),
+            Carbon::now()->format('Y-m-d_H_i'),
+            $config->getReportExtension()
+        );
+        file_put_contents($reportFileName, $formattedReport);
     }
 }
