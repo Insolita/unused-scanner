@@ -28,7 +28,7 @@ run `unused_scanner /path/to/configuration/file/scanner_config.php`
 
 **For auto-testing**:
 
-Add --silent option for skip progress output and return exit code = 1, when unused packages detected
+Add --silent option for skip progress output and return exit code = 16, when unused packages detected
 
 run `unused_scanner /path/to/configuration/file/scanner_config.php --silent`
 
