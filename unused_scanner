@@ -47,12 +47,12 @@ try{
     $result = array_diff(array_unique(array_values($searchMap)), $scanResult);
     if(empty($result)){
         echo PHP_EOL.'Unused dependencies not found!'.PHP_EOL;
-    }else{
-        echo PHP_EOL.'Unused dependencies found!'.PHP_EOL;
-        print_r(array_values($result));
-        echo PHP_EOL;
+        exit(0);
     }
-    exit(0);
+    echo PHP_EOL.'Unused dependencies found!'.PHP_EOL;
+    print_r(array_values($result));
+    echo PHP_EOL;
+    exit(1);
 }catch (\Throwable $e){
     echo 'Error! '.$e->getMessage().PHP_EOL;
     echo $e->getTraceAsString().PHP_EOL;
