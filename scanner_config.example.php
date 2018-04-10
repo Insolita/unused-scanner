@@ -1,5 +1,5 @@
 <?php
-$projectPath = __DIR__ . '/my/project/';
+$projectPath = getcwd();
 
 /**
  * Array of full directories path for scan;
