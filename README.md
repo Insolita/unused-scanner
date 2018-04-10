@@ -4,9 +4,9 @@
 
 ### ChangeLog
 
-1.0.8 Return different exitCodes [@see](https://github.com/Insolita/unused-scanner/blob/1.0.8/Lib/Runner.php#L11)
+1.0.8 Return different exitCodes [@see](https://github.com/Insolita/unused-scanner/blob/master/Lib/Runner.php#L18)
 
-1.0.9 Add ability for store usage report [@see](https://github.com/Insolita/unused-scanner/blob/1.0.9/scanner_config_example.php#69)
+1.0.9 Add ability for store usage report [@see](https://github.com/Insolita/unused-scanner/blob/master/scanner_config.example.php#L51)
 
 
 ### Installation
