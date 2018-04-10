@@ -15,10 +15,4 @@ class RunnerTest extends TestCase
         $exitCode = (new Runner(__DIR__ . '/scanner_test_config_dev.php', false))->run();
         $this->assertEquals(Runner::HAS_UNUSED_CODE, $exitCode);
     }
-    
-    public function testInternal(){
-        $runner = new Runner('/srv/http/newsublev/protected/scanner_config.php', false);
-        $exitCode = $runner->run();
-        $this->assertEquals(Runner::HAS_UNUSED_CODE, $exitCode);
-    }
 }
