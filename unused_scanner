@@ -6,69 +6,20 @@
  *  - composer global require insolita/unused-scanner
  *  - prepare config like in example @see scanner_config.example.php
  *  - php unused_scanner /path/to/scanner_config.php
-**/
-if (file_exists(__DIR__.'/vendor/autoload.php')) {
-    require __DIR__.'/vendor/autoload.php';
+ **/
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
 } else {
-    require __DIR__.'/../../autoload.php';
+    require __DIR__ . '/../../autoload.php';
 }
 
-use insolita\Scanner\Lib\ComposerReader;
-use insolita\Scanner\Lib\Config;
-use insolita\Scanner\Lib\DependencyNamespaceMap;
-use insolita\Scanner\Lib\Scanner;
-use Symfony\Component\Finder\Finder;
+use insolita\Scanner\Lib\Runner;
 
 if (!isset($argv[1])) {
     echo 'Missing required argument - path to config' . PHP_EOL;
-    exit(2);
+    exit(Runner::ARGUMENT_ERROR_CODE);
 }
 $silentMode = isset($argv[2]) && in_array($argv[2], ['--silent', '-s']);
 
-$output = function (string $text) use ($silentMode){
-    if ($silentMode === false) {
-        echo $text;
-    }
-};
-
-$nextDirectoryCallback = function ($directory) use (&$output) {
-    $output(PHP_EOL.' - Scan '.$directory.PHP_EOL);
-};
-
-$progressCallback = function ($done, $total) use (&$output) {
-    $width = 60;
-    $percentage = round(($done * 100) / $total);
-    $bar = round(($width * $percentage) / 100);
-    $output(sprintf("%s%%[%s>%s]\r", $percentage, str_repeat("=", $bar), str_repeat(" ", $width - $bar)));
-};
-
-try {
-    $params = require_once $argv[1];
-    $config = Config::create($params);
-    $output(' - config prepared'.PHP_EOL);
-    
-    $dependencies = (new ComposerReader($config))->fetchDependencies();
-    $searchMap = (new DependencyNamespaceMap($config, $dependencies))->build();
-    $output(' - search patterns prepared'.PHP_EOL);
-
-    $scanResult = (new Scanner($searchMap, $config, new Finder(), $nextDirectoryCallback, $progressCallback))->scan();
-    $result = array_values(array_diff(array_unique(array_values($searchMap)), $scanResult));
-    if (empty($result)) {
-        $output(PHP_EOL.'Unused dependencies not found!'.PHP_EOL);
-        exit(0);
-    } else {
-        $output(PHP_EOL.'Unused dependencies found!'.PHP_EOL);
-        array_walk($result, function ($packageName) {
-            echo ' -'.$packageName.PHP_EOL;
-        });
-        if ($silentMode === true) {
-            exit(1);
-        } else {
-            exit(0);
-        }
-    }
-} catch (\Throwable $e) {
-    echo 'Error! '.$e->getMessage().PHP_EOL;
-    echo $e->getTraceAsString().PHP_EOL;
-    exit(2);
-}
+$exitCode = (new Runner((string)$argv[1], $silentMode))->run();
+exit($exitCode);
