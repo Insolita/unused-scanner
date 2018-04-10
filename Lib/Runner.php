@@ -65,7 +65,7 @@ final class Runner
         if (!is_null($config->getReportPath())) {
             $this->storeReport($scanner->getUsageReport(), $config);
         }
-        return $this->scanReport($map, $scanResult);
+        return $this->showScanReport($map, $scanResult);
     }
     
     public function onNextDirectory(string $directory)
@@ -100,7 +100,7 @@ final class Runner
         }
     }
     
-    private function scanReport(array $map, array $scanResult): int
+    private function showScanReport(array $map, array $scanResult): int
     {
         $result = array_values(array_diff(array_unique(array_values($map)), $scanResult));
         if (empty($result)) {
