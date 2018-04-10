@@ -23,6 +23,8 @@ run `composer dumpautoload` in your project directory
 
 run `unused_scanner /path/to/configuration/file/scanner_config.php`
 
+> **Docker**: run ```docker run -v `pwd`:/app tico/unused-scanner /app/path/to/configuration/file/scanner_config.php```
+
 wait for result..
 
 ![Demo screenshot](unused.png)
