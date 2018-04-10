@@ -19,7 +19,7 @@ final class ComposerReader
     {
         $composerData = $this->readComposerJson();
         $packages = $composerData['require'];
-        if($this->config->getRequireDev()===true){
+        if ($this->config->getRequireDev()===true) {
             $packages = array_merge($packages, $composerData['require-dev'] ?? []);
         }
         return array_keys($packages);

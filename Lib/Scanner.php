@@ -131,10 +131,10 @@ final class Scanner
             $isMatched = !is_null($this->config->getCustomMatch())
                 ?call_user_func($this->config->getCustomMatch(), $definition, $packageName, $file)
                 :false;
-            if(!$isMatched){
-                $isMatched = preg_match($pattern, str_replace('\\\\', '\\',$fileContent));
+            if (!$isMatched) {
+                $isMatched = preg_match($pattern, str_replace('\\\\', '\\', $fileContent));
             }
-            if($isMatched){
+            if ($isMatched) {
                 $usageFounds[] = $packageName;
             }
         }
