@@ -1,5 +1,7 @@
 # Project scanner for detect unused composer dependencies
 
+[![Build Status](https://travis-ci.org/Insolita/unused-scanner.svg?branch=master)](https://travis-ci.org/Insolita/unused-scanner)
+
 ### Installation
 
 `composer global require insolita/unused-scanner`
