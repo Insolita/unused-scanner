@@ -26,12 +26,15 @@ class ScannerTest extends TestCase
             'Webmozart\\Assert\\Tests\\' => 14,
             'Webmozart\Assert\Assert' => 15,
             'Prophecy\Exception' => 16,
+            'A2I\\GeoBundle\\' => 17,
         ];
     
     public function testDetection()
     {
         $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']);
-        $scanner = new Scanner(self::$map, $config, new Finder(), function () {}, function () {});
+        $scanner = new Scanner(self::$map, $config, new Finder(), function () {
+        }, function () {
+        });
         $founds = $scanner->scan();
         sort($founds);
         $this->assertEquals([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], $founds);
@@ -41,31 +44,48 @@ class ScannerTest extends TestCase
     {
         $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', []);
         $config->setScanFiles([__DIR__ . '/stubs/dummy.php']);
-        $scanner = new Scanner(self::$map, $config, new Finder(), function () {}, function () {});
+        $scanner = new Scanner(self::$map, $config, new Finder(), function () {
+        }, function () {
+        });
         $founds = $scanner->scan();
         sort($founds);
         $this->assertEquals([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], $founds);
     }
     
-    public function testScanWithCustomMatch(){
-        $map = array_merge(self::$map, ['Foo\Bar'=>17, 'Bar\Baz'=>18]);
+    public function testScanWithCustomMatch()
+    {
+        $map = array_merge(self::$map, ['Foo\Bar' => 17, 'Bar\Baz' => 18]);
         $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']);
         $config->setCustomMatch(function ($definition, $packageName, \Symfony\Component\Finder\SplFileInfo $file) {
-            if($packageName === 18){
+            if ($packageName === 18) {
                 return true;
             }
             
-            if($file->getExtension()==='twig'){
-                $definition= str_replace('\\', '/', $definition);
-                if(mb_strpos($file->getContents(), $definition)!==false){
+            if ($file->getExtension() === 'twig') {
+                $definition = str_replace('\\', '/', $definition);
+                if (mb_strpos($file->getContents(), $definition) !== false) {
                     return true;
                 }
             }
             return false;
         })->setExtensions(['*.php', '*.twig']);
-        $scanner = new Scanner($map, $config, new Finder(), function () {}, function () {});
+        $scanner = new Scanner($map, $config, new Finder(), function () {
+        }, function () {
+        });
         $founds = $scanner->scan();
         sort($founds);
         $this->assertEquals([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], $founds);
+    }
+    
+    public function testYmlScan()
+    {
+        $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']);
+        $config->setExtensions(['*.yml']);
+        $scanner = new Scanner(self::$map, $config, new Finder(), function () {
+        }, function () {
+        });
+        $founds = $scanner->scan();
+        sort($founds);
+        $this->assertEquals([17], $founds);
     }
 }

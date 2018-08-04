@@ -1,0 +1,8 @@
+a2i_geo.command.convert_city_layer_to_fixtures:
+    class: A2I\GeoBundle\Command\ConvertToFixtures\ConvertCityLayerToFixturesCommand
+    arguments:
+    - '@a2i_geo.helper.file.ogr_feature_data_collector'
+    - '@a2i_geo.factory.dto.skipped_item'
+    - '@bazinga_geocoder.geocoder'
+    tags:
+    - name: console.command
