@@ -4,6 +4,7 @@ use insolita\Scanner\Lib\Config;
 use insolita\Scanner\Lib\Scanner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class ScannerTest extends TestCase
 {
@@ -27,6 +28,7 @@ class ScannerTest extends TestCase
             'Webmozart\Assert\Assert' => 15,
             'Prophecy\Exception' => 16,
             'A2I\\GeoBundle\\' => 17,
+            'Bazinga\\GeocoderBundle\\' => 18,
         ];
     
     public function testDetection()
@@ -56,7 +58,7 @@ class ScannerTest extends TestCase
     {
         $map = array_merge(self::$map, ['Foo\Bar' => 17, 'Bar\Baz' => 18]);
         $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']);
-        $config->setCustomMatch(function ($definition, $packageName, \Symfony\Component\Finder\SplFileInfo $file) {
+        $config->setCustomMatch(function ($definition, $packageName, SplFileInfo $file) {
             if ($packageName === 18) {
                 return true;
             }
@@ -81,11 +83,34 @@ class ScannerTest extends TestCase
     {
         $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']);
         $config->setExtensions(['*.yml']);
-        $scanner = new Scanner(self::$map, $config, new Finder(), function () {
-        }, function () {
-        });
+        $fn = function () {
+        };
+        $scanner = new Scanner(self::$map, $config, new Finder(), $fn, $fn);
         $founds = $scanner->scan();
         sort($founds);
         $this->assertEquals([17], $founds);
+    }
+    
+    public function testSymfonyCustomScan()
+    {
+        $config = (new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']))
+            ->setExtensions(['*.yml'])
+            ->setCustomMatch(function ($definition, $packageName, SplFileInfo $file) {
+                if ($file->getExtension() === 'yml') {
+                    $bundleDefinition = '@'.mb_strtolower(
+                        preg_replace('/\\\\/', '_', str_replace('Bundle', '', $definition),1)
+                    );
+                    $bundleDefinition = rtrim($bundleDefinition, '\\');
+                    if (mb_strpos($file->getContents(), $bundleDefinition) !== false) {
+                        return true;
+                    }
+                }
+            });
+        $fn = function () {
+        };
+        $scanner = new Scanner(self::$map, $config, new Finder(), $fn, $fn);
+        $founds = $scanner->scan();
+        sort($founds);
+        $this->assertEquals([17, 18], $founds);
     }
 }
