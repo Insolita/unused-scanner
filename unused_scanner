@@ -16,13 +16,28 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 use insolita\Scanner\Lib\Runner;
 
-if (!isset($argv[1])) {
+$defaultConfigPath = getcwd() . DIRECTORY_SEPARATOR . 'scanner_config.php';
+
+$configPath = $argv[1] ?? null;
+
+if (in_array($configPath, ['--silent', '-s'])) {
+    $configPath = null;
+    $silentMode = true;
+}
+
+if (!$configPath && file_exists($defaultConfigPath)) {
+    $configPath = $defaultConfigPath;
+    echo 'Default detected config will be used at ' . $defaultConfigPath . PHP_EOL;
+}
+if (!$configPath) {
     echo 'Missing required argument - path to config' . PHP_EOL;
     exit(Runner::ARGUMENT_ERROR_CODE);
 }
-$silentMode = isset($argv[2]) && in_array($argv[2], ['--silent', '-s']);
+if (!isset($silentMode)) {
+    $silentMode = isset($argv[2]) && in_array($argv[2], ['--silent', '-s']);
+}
 
-$exitCode = (new Runner((string)$argv[1], $silentMode))->run();
+$exitCode = (new Runner((string)$configPath, $silentMode))->run();
 
 exit($exitCode);
 
