@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
+use function array_filter;
+use function mb_strpos;
+
 final class ComposerReader
 {
     /**
@@ -22,7 +25,10 @@ final class ComposerReader
         if ($this->config->getRequireDev()===true) {
             $packages = array_merge($packages, $composerData['require-dev'] ?? []);
         }
-        return array_keys($packages);
+        $packages = array_keys($packages);
+        return array_filter($packages, function ($package) {
+            return mb_strpos($package, '/') !== false;
+        });
     }
     
     private function readComposerJson(): array

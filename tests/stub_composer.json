@@ -11,15 +11,17 @@
     ] ,
     "minimum-stability": "dev" ,
     "require":           {
+        "php":            ">=7.0" ,
+        "ext-gd":         "*" ,
         "symfony/finder": "^3.4|^4.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~7.0",
-        "symfony/thanks": "1.0.*"
-    },
-    "bin": [
+    } ,
+    "require-dev":       {
+        "phpunit/phpunit": "~7.0" ,
+        "symfony/thanks":  "1.0.*"
+    } ,
+    "bin":               [
         "unused_scanner"
-    ],
+    ] ,
     "autoload":          {
         "psr-4": {
             "insolita\\Scanner\\": ""
