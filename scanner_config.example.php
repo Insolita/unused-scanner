@@ -44,6 +44,7 @@ return [
     /**
      * Optional params
     **/
+    'skipPackages' => [], //List of packages that must be excluded from verification
     'excludeDirectories' => $excludeDirectories,
     'scanFiles' => $scanFiles,
     'extensions' => ['*.php'],

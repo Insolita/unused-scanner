@@ -5,7 +5,6 @@ namespace insolita\Scanner\tests;
 use insolita\Scanner\Lib\ComposerReader;
 use insolita\Scanner\Lib\Config;
 use PHPUnit\Framework\TestCase;
-use function print_r;
 
 /**
  * @author insolita
@@ -19,11 +18,24 @@ class ComposerReaderTest extends TestCase
         $config->setRequireDev(true);
         $reader = new ComposerReader($config);
         $packages = $reader->fetchDependencies();
-        print_r($packages);
         $this->assertNotContains('php', $packages);
         $this->assertNotContains('ext-gd', $packages);
         $this->assertContains('symfony/finder', $packages);
         $this->assertContains('phpunit/phpunit', $packages);
+        $this->assertContains('symfony/thanks', $packages);
+    }
+    
+    public function testItShouldBeSkipCustomConfiguredPackages()
+    {
+        $config = new Config(__DIR__ . '/stub_composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs/']);
+        $config->setRequireDev(true);
+        $config->setSkipPackages(['symfony/finder', 'ext-gd', 'phpunit/phpunit']);
+        $reader = new ComposerReader($config);
+        $packages = $reader->fetchDependencies();
+        $this->assertNotContains('php', $packages);
+        $this->assertNotContains('ext-gd', $packages);
+        $this->assertNotContains('symfony/finder', $packages);
+        $this->assertNotContains('phpunit/phpunit', $packages);
         $this->assertContains('symfony/thanks', $packages);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace insolita\Scanner\Lib;
 
 use function array_filter;
+use function in_array;
 use function mb_strpos;
 
 final class ComposerReader
@@ -27,7 +28,9 @@ final class ComposerReader
         }
         $packages = array_keys($packages);
         return array_filter($packages, function ($package) {
-            return mb_strpos($package, '/') !== false;
+            $packageHasVendor = mb_strpos($package, '/') !== false;
+            $packageNotSkipped = !in_array($package, $this->config->getSkipPackages());
+            return $packageHasVendor && $packageNotSkipped;
         });
     }
     

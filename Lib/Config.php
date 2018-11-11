@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace insolita\Scanner\Lib;
 
 use insolita\Scanner\Exceptions\InvalidConfigException;
-use const DIRECTORY_SEPARATOR;
+use function is_array;
 use function is_callable;
 use function is_dir;
 use function is_string;
 use function rtrim;
+use const DIRECTORY_SEPARATOR;
 
 final class Config
 {
@@ -16,6 +17,8 @@ final class Config
     private $vendorPath;
     private $scanDirectories = [];
     private $excludeDirectories = [];
+    
+    private $skipPackages = [];
     
     private $scanFiles = [];
     private $requireDev = false;
@@ -188,6 +191,22 @@ final class Config
     }
     
     /**
+     * @return array
+     */
+    public function getSkipPackages(): array
+    {
+        return $this->skipPackages;
+    }
+    
+    /**
+     * @param array $skipPackages
+     */
+    public function setSkipPackages(array $skipPackages): void
+    {
+        $this->skipPackages = $skipPackages;
+    }
+    
+    /**
      * @param array $data
      *
      * @return \insolita\Scanner\Lib\Config
@@ -223,6 +242,9 @@ final class Config
         }
         if (isset($data['reportExtension']) && is_string($data['reportExtension'])) {
             $config->setReportExtension('.'.ltrim($data['reportExtension'], '.'));
+        }
+        if (isset($data['skipPackages']) && is_array($data['skipPackages'])) {
+            $config->setSkipPackages($data['skipPackages']);
         }
         return $config;
     }
