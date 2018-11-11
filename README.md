@@ -8,6 +8,12 @@
 
 1.0.9 Add ability for store usage report [@see](https://github.com/Insolita/unused-scanner/blob/master/scanner_config.example.php#L51)
 
+1.1
+   - Fix #10 - php extensions should be skipped without warnings
+
+   - Fix #12 - check presence of scanner_config.php in current working directory and allow run without arguments
+
+   - New config option - skipPackages for excluding packages from checking
 
 ### Installation
 
@@ -32,6 +38,9 @@ put it in project root (or other place)
 run `composer dumpautoload` in your project directory
 
 run `unused_scanner /path/to/configuration/file/scanner_config.php`
+
+since 1.1 you can run it without  argument, if scanner_config.php existed in current working directory, it will be used
+by default
 
 **For auto-testing**:
 
