@@ -1,7 +1,4 @@
 <?php
-
-namespace insolita\Scanner\tests;
-
 use insolita\Scanner\Lib\ComposerReader;
 use insolita\Scanner\Lib\Config;
 use PHPUnit\Framework\TestCase;
