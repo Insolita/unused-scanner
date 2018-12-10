@@ -74,28 +74,25 @@ final class DependencyMapper
     
     private function loadNamespaces(): array
     {
-        if (file_exists($this->config->getVendorPath('composer/autoload_namespaces.php'))) {
-            return require_once $this->config->getVendorPath('composer/autoload_namespaces.php');
-        } else {
-            return [];
+        if (file_exists($this->config->getVendorPath('composer'.DIRECTORY_SEPARATOR.'autoload_namespaces.php'))) {
+            return require_once $this->config->getVendorPath('composer'.DIRECTORY_SEPARATOR.'autoload_namespaces.php');
         }
+        return [];
     }
     
     private function loadPsr(): array
     {
-        if (file_exists($this->config->getVendorPath('composer/autoload_psr4.php'))) {
-            return require_once $this->config->getVendorPath('composer/autoload_psr4.php');
-        } else {
-            return [];
+        if (file_exists($this->config->getVendorPath('composer'.DIRECTORY_SEPARATOR.'autoload_psr4.php'))) {
+            return require_once $this->config->getVendorPath('composer'.DIRECTORY_SEPARATOR.'autoload_psr4.php');
         }
+        return [];
     }
     
     private function loadClassmap(): array
     {
-        if (file_exists($this->config->getVendorPath('composer/autoload_classmap.php'))) {
-            return require_once $this->config->getVendorPath('composer/autoload_classmap.php');
-        } else {
-            return [];
+        if (file_exists($this->config->getVendorPath('composer'.DIRECTORY_SEPARATOR.'autoload_classmap.php'))) {
+            return require_once $this->config->getVendorPath('composer'.DIRECTORY_SEPARATOR.'autoload_classmap.php');
         }
+        return [];
     }
 }
