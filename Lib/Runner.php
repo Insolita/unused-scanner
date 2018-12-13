@@ -104,7 +104,7 @@ final class Runner
     {
         $result = array_values(array_diff(array_unique(array_values($map)), $scanResult));
         if (empty($result)) {
-            $this->output(PHP_EOL . 'Unused dependencies not found!' . PHP_EOL);
+            $this->output(PHP_EOL . 'No unused dependencies found!' . PHP_EOL);
             return self::SUCCESS_CODE;
         } else {
             $this->output(PHP_EOL . 'Unused dependencies found!' . PHP_EOL);
