@@ -31,7 +31,7 @@ final class DependencyMapper
     {
         foreach ($this->loadNamespaces() as $definition => $pathMap) {
             foreach ($this->dependencies as $packageName => $pathPart) {
-                if (mb_strpos(implode(',', $pathMap), $pathPart) !== false) {
+                if (mb_strpos(str_replace('/', DIRECTORY_SEPARATOR, implode(',', $pathMap)), str_replace('/', DIRECTORY_SEPARATOR, $pathPart)) !== false) {
                     $this->addToMap($definition, $packageName);
                     break;
                 }
@@ -40,7 +40,7 @@ final class DependencyMapper
     
         foreach ($this->loadPsr() as $definition => $pathMap) {
             foreach ($this->dependencies as $packageName => $pathPart) {
-                if (mb_strpos(implode(',', $pathMap), $pathPart) !== false) {
+                if (mb_strpos(str_replace('/', DIRECTORY_SEPARATOR, implode(',', $pathMap)), str_replace('/', DIRECTORY_SEPARATOR, $pathPart)) !== false) {
                     $this->addToMap($definition, $packageName);
                     break;
                 }
@@ -48,7 +48,9 @@ final class DependencyMapper
         }
     
         foreach ($this->loadClassmap() as $definition => $path) {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
             foreach ($this->dependencies as $packageName => $pathPart) {
+                $pathPart = str_replace('/', DIRECTORY_SEPARATOR, $pathPart);
                 if (mb_strpos($path, $pathPart) !== false) {
                     $this->addToMap($definition, $packageName);
                     break;
