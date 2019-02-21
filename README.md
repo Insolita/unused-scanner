@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.org/Insolita/unused-scanner.svg?branch=master)](https://travis-ci.org/Insolita/unused-scanner)
 
+### Versions
+
+Use 1.3.x versions for projects with php 5.6, 7.0
+
+Use 2.x versions for projects with php >= 7.1 
+
 ### ChangeLog
 
 see [CHANGELOG.md](CHANGELOG.md)
