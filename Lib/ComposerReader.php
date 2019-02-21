@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
@@ -19,7 +18,10 @@ final class ComposerReader
         $this->config = $config;
     }
     
-    public function fetchDependencies(): array
+    /**
+     * @return array
+     */
+    public function fetchDependencies()
     {
         $composerData = $this->readComposerJson();
         $packages = $composerData['require'];
@@ -34,7 +36,10 @@ final class ComposerReader
         });
     }
     
-    private function readComposerJson(): array
+    /**
+     * @return array
+     */
+    private function readComposerJson()
     {
         $file = file_get_contents($this->config->getComposerJsonPath());
         return $file ? json_decode($file, true) : [];

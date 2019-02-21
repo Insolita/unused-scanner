@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
@@ -27,7 +26,10 @@ final class DependencyMapper
         $this->dependencies = $this->prepareDependencies($dependencies);
     }
     
-    public function build(): array
+    /**
+     * @return array
+     */
+    public function build()
     {
         foreach ($this->loadNamespaces() as $definition => $pathMap) {
             foreach ($this->dependencies as $packageName => $pathPart) {
@@ -73,7 +75,10 @@ final class DependencyMapper
         $this->map[$definition] = $packageName;
     }
     
-    private function loadNamespaces(): array
+    /**
+     * @return array
+     */
+    private function loadNamespaces()
     {
         if (file_exists($this->config->getVendorPath('composer' . DIRECTORY_SEPARATOR . 'autoload_namespaces.php'))) {
             return require_once $this->config->getVendorPath('composer' . DIRECTORY_SEPARATOR. 'autoload_namespaces.php');
@@ -81,7 +86,10 @@ final class DependencyMapper
         return [];
     }
     
-    private function loadPsr(): array
+    /**
+     * @return array
+     */
+    private function loadPsr()
     {
         if (file_exists($this->config->getVendorPath('composer' . DIRECTORY_SEPARATOR . 'autoload_psr4.php'))) {
             return require_once $this->config->getVendorPath('composer' . DIRECTORY_SEPARATOR . 'autoload_psr4.php');
@@ -89,7 +97,10 @@ final class DependencyMapper
         return [];
     }
     
-    private function loadClassmap(): array
+    /**
+     * @return array
+     */
+    private function loadClassmap()
     {
         if (file_exists($this->config->getVendorPath('composer' . DIRECTORY_SEPARATOR . 'autoload_classmap.php'))) {
             return require_once $this->config->getVendorPath('composer' . DIRECTORY_SEPARATOR . 'autoload_classmap.php');
@@ -97,12 +108,23 @@ final class DependencyMapper
         return [];
     }
     
-    private function isPathMatched(string $path, string $pathPart): bool
+    /**
+     * @param  string $path
+     * @param  string $pathPart
+     *
+     * @return bool
+     */
+    private function isPathMatched($path, $pathPart)
     {
         return mb_strpos($this->normalizePath($path), $this->normalizePath($pathPart)) !== false;
     }
     
-    private function normalizePath(string $path): string
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    private function normalizePath($path)
     {
         $ds = DIRECTORY_SEPARATOR;
         $path = rtrim(strtr($path, '/\\', $ds . $ds), $ds);
