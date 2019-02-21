@@ -1,3 +1,7 @@
+1.2
+
+ - Window suppor improvement
+ 
 1.1.1
 
    - Fix #13, use DIRECTORY_SEPARATOR constants for windows support
