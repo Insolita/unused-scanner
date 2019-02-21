@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
@@ -66,10 +67,7 @@ final class Scanner
         $this->reportMode = !is_null($config->getReportPath());
     }
     
-    /**
-     * @return array
-     */
-    public function scan()
+    public function scan(): array
     {
         foreach ($this->config->getScanDirectories() as $directory) {
             if (is_dir($directory)) {
@@ -87,7 +85,7 @@ final class Scanner
     /**
      * @return array
      */
-    public function getUsageReport()
+    public function getUsageReport(): array
     {
         return $this->usageReport;
     }
@@ -114,7 +112,7 @@ final class Scanner
         }
     }
     
-    private function scanDirectory($directory)
+    private function scanDirectory(string $directory)
     {
         $finder = clone $this->finder;
         $files = $finder->files()->in([$directory])->exclude($this->config->getExcludeDirectories());
@@ -184,12 +182,7 @@ final class Scanner
         $this->registerFounds($usageFounds);
     }
     
-    /**
-     * @param string $packageName
-     * @param string $definition
-     * @param string $fileName
-     */
-    private function collectFounds($packageName,  $definition,  $fileName)
+    private function collectFounds(string $packageName, string $definition, string $fileName)
     {
         if (!isset($this->usageReport[$packageName])) {
             $this->usageReport[$packageName] = [];

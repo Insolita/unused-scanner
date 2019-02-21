@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
@@ -27,7 +28,7 @@ final class Config
     private $reportExtension = '.json';
     private $reportFormatter = null;
     
-    public function __construct($composerJsonPath,  $vendorPath, array $scanDirectories)
+    public function __construct(string $composerJsonPath, string $vendorPath, array $scanDirectories)
     {
         if (!mb_strpos($composerJsonPath, 'composer.json')) {
             $composerJsonPath = rtrim($composerJsonPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'composer.json';
@@ -39,46 +40,27 @@ final class Config
         }, $scanDirectories);
     }
     
-    /**
-     * @return string
-     */
-    public function getComposerJsonPath()
+    public function getComposerJsonPath(): string
     {
         return $this->composerJsonPath;
     }
     
-    /**
-     * @param string $append
-     *
-     * @return string
-     */
-    public function getVendorPath($append = '')
+    public function getVendorPath(string $append = ''): string
     {
         return $this->vendorPath . $append;
     }
     
-    /**
-     * @return array
-     */
-    public function getScanDirectories()
+    public function getScanDirectories(): array
     {
-        return empty($this->scanDirectories) ? []: $this->scanDirectories;
+        return $this->scanDirectories ?? [];
     }
     
-    /**
-     * @return bool
-     */
-    public function getRequireDev()
+    public function getRequireDev(): bool
     {
         return $this->requireDev;
     }
     
-    /**
-     * @param $requireDev
-     *
-     * @return $this
-     */
-    public function setRequireDev($requireDev)
+    public function setRequireDev(bool $requireDev): Config
     {
         $this->requireDev = $requireDev;
         return $this;
@@ -87,9 +69,9 @@ final class Config
     /**
      * @return array
      */
-    public function getScanFiles()
+    public function getScanFiles(): array
     {
-        return empty($this->scanFiles)? [] : $this->scanFiles;
+        return $this->scanFiles ?? [];
     }
     
     /**
@@ -97,7 +79,7 @@ final class Config
      *
      * @return Config
      */
-    public function setScanFiles(array $scanFiles)
+    public function setScanFiles(array $scanFiles): Config
     {
         $this->scanFiles = $scanFiles;
         return $this;
@@ -106,9 +88,9 @@ final class Config
     /**
      * @return array
      */
-    public function getExcludeDirectories()
+    public function getExcludeDirectories(): array
     {
-        return empty($this->excludeDirectories)? []: $this->excludeDirectories;
+        return $this->excludeDirectories ?? [];
     }
     
     /**
@@ -116,7 +98,7 @@ final class Config
      *
      * @return Config
      */
-    public function setExcludeDirectories(array $excludeDirectories)
+    public function setExcludeDirectories(array $excludeDirectories): Config
     {
         $this->excludeDirectories = $excludeDirectories;
         return $this;
@@ -125,7 +107,7 @@ final class Config
     /**
      * @return array
      */
-    public function getExtensions()
+    public function getExtensions(): array
     {
         return $this->extensions;
     }
@@ -135,7 +117,7 @@ final class Config
      *
      * @return Config
      */
-    public function setExtensions(array $extensions)
+    public function setExtensions(array $extensions): Config
     {
         $this->extensions = $extensions;
         return $this;
@@ -144,7 +126,7 @@ final class Config
     /**
      * @return null|callable
      */
-    public function getCustomMatch()
+    public function getCustomMatch():?callable
     {
         return $this->customMatch;
     }
@@ -165,16 +147,13 @@ final class Config
      *
      * @return Config
      */
-    public function setReportPath($reportPath)
+    public function setReportPath(string $reportPath)
     {
         $this->reportPath = $reportPath;
         return $this;
     }
     
-    /**
-     * @return null|string
-     */
-    public function getReportPath()
+    public function getReportPath():?string
     {
         return $this->reportPath;
     }
@@ -184,16 +163,13 @@ final class Config
      *
      * @return Config
      */
-    public function setReportFormatter($reportFormatter)
+    public function setReportFormatter(callable $reportFormatter)
     {
         $this->reportFormatter = $reportFormatter;
         return $this;
     }
     
-    /**
-     * @return null|callable
-     */
-    public function getReportFormatter()
+    public function getReportFormatter():?callable
     {
         return $this->reportFormatter;
     }
@@ -201,7 +177,7 @@ final class Config
     /**
      * @param string $reportExtension
      */
-    public function setReportExtension($reportExtension)
+    public function setReportExtension(string $reportExtension): void
     {
         $this->reportExtension = $reportExtension;
     }
@@ -209,7 +185,7 @@ final class Config
     /**
      * @return string
      */
-    public function getReportExtension()
+    public function getReportExtension(): string
     {
         return $this->reportExtension;
     }
@@ -217,7 +193,7 @@ final class Config
     /**
      * @return array
      */
-    public function getSkipPackages()
+    public function getSkipPackages(): array
     {
         return $this->skipPackages;
     }
@@ -225,7 +201,7 @@ final class Config
     /**
      * @param array $skipPackages
      */
-    public function setSkipPackages(array $skipPackages)
+    public function setSkipPackages(array $skipPackages): void
     {
         $this->skipPackages = $skipPackages;
     }
@@ -236,7 +212,7 @@ final class Config
      * @return \insolita\Scanner\Lib\Config
      * @throws \insolita\Scanner\Exceptions\InvalidConfigException
      */
-    public static function create(array $data)
+    public static function create(array $data): Config
     {
         if (!isset($data['composerJsonPath'], $data['vendorPath'], $data['scanDirectories'])) {
             throw new InvalidConfigException('missing required keys');

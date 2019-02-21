@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace insolita\Scanner\Lib;
 
 use Carbon\Carbon;
@@ -30,7 +32,7 @@ final class Runner
      */
     private $silentMode;
     
-    public function __construct( $configFile,  $silentMode)
+    public function __construct(string $configFile, bool $silentMode)
     {
         $this->configFile = $configFile;
         $this->silentMode = $silentMode;
@@ -66,19 +68,12 @@ final class Runner
         return $this->showScanReport($map, $scanResult);
     }
     
-    /**
-     * @param string $directory
-     */
-    public function onNextDirectory($directory)
+    public function onNextDirectory(string $directory)
     {
         $this->output(PHP_EOL . ' - Scan ' . $directory . PHP_EOL);
     }
     
-    /**
-     * @param int $done
-     * @param int $total
-     */
-    public function onProgress($done, $total)
+    public function onProgress(int $done, int $total)
     {
         $width = 60;
         $percentage = round(($done * 100) / ($total <= 0 ? 1 : $total));
@@ -86,43 +81,26 @@ final class Runner
         $this->output(sprintf("%s%%[%s>%s]\r", $percentage, str_repeat("=", $bar), str_repeat(" ", $width - $bar)));
     }
     
-    /**
-     * @return \insolita\Scanner\Lib\Config
-     */
-    private function makeConfig()
+    private function makeConfig(): Config
     {
         $params = require_once $this->configFile;
         return Config::create($params);
     }
     
-    /**
-     * @param \insolita\Scanner\Lib\Config $config
-     *
-     * @return array
-     */
-    private function makeDependencyMap(Config $config)
+    private function makeDependencyMap(Config $config): array
     {
         $dependencies = (new ComposerReader($config))->fetchDependencies();
         return (new DependencyMapper($config, $dependencies))->build();
     }
     
-    /**
-     * @param $message
-     */
-    private function output($message)
+    private function output(string $message)
     {
         if ($this->silentMode === false) {
             echo $message;
         }
     }
     
-    /**
-     * @param array $map
-     * @param array $scanResult
-     *
-     * @return int
-     */
-    private function showScanReport(array $map, array $scanResult)
+    private function showScanReport(array $map, array $scanResult): int
     {
         $result = array_values(array_diff(array_unique(array_values($map)), $scanResult));
         if (empty($result)) {
