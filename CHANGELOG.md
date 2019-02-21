@@ -1,5 +1,10 @@
-1.2
+2.0
+ - PHP >=7.1 branch without legacy support
+ 
+1.3 
+ - Added support for old php 5.6, php 7.0 versions
 
+1.2
  - Window suppor improvement
  
 1.1.1
