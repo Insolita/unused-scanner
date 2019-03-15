@@ -27,5 +27,10 @@
         "psr-4": {
             "insolita\\Scanner\\": ""
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-legacy": "1.3.x-dev"
+        }
     }
 }
