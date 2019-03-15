@@ -18,7 +18,7 @@ use insolita\Scanner\Lib\Runner;
 
 $defaultConfigPath = getcwd() . DIRECTORY_SEPARATOR . 'scanner_config.php';
 
-$configPath = $argv[1] ?? null;
+$configPath = isset($argv[1])? $argv[1]: null;
 
 if (in_array($configPath, ['--silent', '-s'])) {
     $configPath = null;
