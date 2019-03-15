@@ -4,7 +4,7 @@
 
 ### Versions
 
-Use 1.3.x versions for projects with php 5.6, 7.0
+Use 1.3.x@dev versions for projects with php 5.6, 7.0
 
 Use 2.x versions for projects with php >= 7.1 
 
