@@ -52,3 +52,7 @@ run `unused_scanner /path/to/configuration/file/scanner_config.php --silent`
 wait for result..
 
 ![Demo screenshot](unused.png)
+
+### Licence
+
+This project uses the [MIT licence](https://choosealicense.com/licenses/mit/).
