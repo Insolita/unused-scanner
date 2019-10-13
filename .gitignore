@@ -1,6 +1,5 @@
 .idea
 vendor
-composer.lock
 .php_cs.cache
 tests/reports/*.txt
 tests/reports/*.json
