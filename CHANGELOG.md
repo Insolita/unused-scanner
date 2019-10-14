@@ -1,3 +1,7 @@
+2.0.2 
+  - Add License file
+  - Fix travis tests config
+  
 2.0
  - PHP >=7.1 branch without legacy support
  
