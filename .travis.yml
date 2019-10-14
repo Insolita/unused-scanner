@@ -4,7 +4,7 @@ php:
   - 7.2
   - 7.3
 matrix:
-   fast_finish: true
+  fast_finish: true
 # cache vendor dirs
 cache:
   directories:
@@ -20,4 +20,4 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - travis_retry composer install --prefer-dist --no-interaction
 
-script: phpunit -vvv
+script: vendor/bin/phpunit -vvv
