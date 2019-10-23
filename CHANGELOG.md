@@ -1,3 +1,7 @@
+2.0.3
+  - Added ext_mbstring dependency in composer.json
+  - Cosmetic changes
+  
 2.0.2 
   - Add License file
   - Fix travis tests config
