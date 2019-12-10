@@ -6,12 +6,13 @@ namespace insolita\Scanner\Lib;
 use Carbon\Carbon;
 use insolita\Scanner\Exceptions\InvalidConfigException;
 use Symfony\Component\Finder\Finder;
+use Throwable;
 use function call_user_func;
 use function file_put_contents;
-use function is_null;
 use function json_encode;
 use function sprintf;
 use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
 
 final class Runner
 {
@@ -48,7 +49,7 @@ final class Runner
             $this->output(' - config prepared' . PHP_EOL);
             $map = $this->makeDependencyMap($config);
             $this->output(' - search patterns prepared' . PHP_EOL);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             echo 'Error! ' . $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
             $exitCode = $e instanceof InvalidConfigException ? self::CONFIG_ERROR_CODE : self::GENERAL_ERROR_CODE;
@@ -57,12 +58,12 @@ final class Runner
         try {
             $scanner = (new Scanner($map, $config, new Finder(), [$this, 'onNextDirectory'], [$this, 'onProgress']));
             $scanResult = $scanner->scan();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             echo 'Error! ' . $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
             return self::SCANNING_ERROR_CODE;
         }
-        if (!is_null($config->getReportPath())) {
+        if ($config->getReportPath() !== null) {
             $this->storeReport($scanner->getUsageReport(), $config);
         }
         return $this->showScanReport($map, $scanResult);
@@ -83,7 +84,7 @@ final class Runner
     
     private function makeConfig(): Config
     {
-        $params = require_once $this->configFile;
+        $params = require $this->configFile;
         return Config::create($params);
     }
     
@@ -106,20 +107,20 @@ final class Runner
         if (empty($result)) {
             $this->output(PHP_EOL . 'No unused dependencies found!' . PHP_EOL);
             return self::SUCCESS_CODE;
-        } else {
-            $this->output(PHP_EOL . 'Unused dependencies found!' . PHP_EOL);
-            array_walk($result, function ($packageName) {
-                echo ' -' . $packageName . PHP_EOL;
-            });
-            return self::HAS_UNUSED_CODE;
         }
+
+        $this->output(PHP_EOL . 'Unused dependencies found!' . PHP_EOL);
+        array_walk($result, function ($packageName) {
+            echo ' -' . $packageName . PHP_EOL;
+        });
+        return self::HAS_UNUSED_CODE;
     }
     
     private function storeReport(array $usageReport, Config $config)
     {
-        $formattedReport = !is_null($config->getReportFormatter())
+        $formattedReport = $config->getReportFormatter() !== null
             ? (string)call_user_func($config->getReportFormatter(), $usageReport)
-            : json_encode($usageReport, JSON_PRETTY_PRINT);
+            : json_encode($usageReport, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $reportFileName = sprintf(
             '%spackage_usage_report_%s%s',
             $config->getReportPath(),
