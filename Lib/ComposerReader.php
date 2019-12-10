@@ -29,7 +29,7 @@ final class ComposerReader
         $packages = array_keys($packages);
         return array_filter($packages, function ($package) {
             $packageHasVendor = mb_strpos($package, '/') !== false;
-            $packageNotSkipped = !in_array($package, $this->config->getSkipPackages());
+            $packageNotSkipped = !in_array($package, $this->config->getSkipPackages(), true);
             return $packageHasVendor && $packageNotSkipped;
         });
     }

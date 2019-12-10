@@ -23,10 +23,10 @@ final class Config
     private $scanFiles = [];
     private $requireDev = false;
     private $extensions = ['*.php'];
-    private $customMatch = null;
-    private $reportPath = null;
+    private $customMatch;
+    private $reportPath;
     private $reportExtension = '.json';
-    private $reportFormatter = null;
+    private $reportFormatter;
     
     public function __construct(string $composerJsonPath, string $vendorPath, array $scanDirectories)
     {
@@ -136,7 +136,7 @@ final class Config
      *
      * @return Config
      */
-    public function setCustomMatch(callable $customMatch)
+    public function setCustomMatch(callable $customMatch):Config
     {
         $this->customMatch = $customMatch;
         return $this;
@@ -147,7 +147,7 @@ final class Config
      *
      * @return Config
      */
-    public function setReportPath(string $reportPath)
+    public function setReportPath(string $reportPath):Config
     {
         $this->reportPath = $reportPath;
         return $this;
@@ -163,7 +163,7 @@ final class Config
      *
      * @return Config
      */
-    public function setReportFormatter(callable $reportFormatter)
+    public function setReportFormatter(callable $reportFormatter):Config
     {
         $this->reportFormatter = $reportFormatter;
         return $this;
