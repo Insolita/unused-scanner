@@ -12,7 +12,6 @@ use function call_user_func;
 use function in_array;
 use function is_dir;
 use function is_file;
-use function is_null;
 use function preg_match;
 use function str_replace;
 
@@ -64,7 +63,7 @@ final class Scanner
         $this->finder = $finder;
         $this->onNextDirectory = $onNextDirectory;
         $this->onDirectoryProgress = $onDirectoryProgress;
-        $this->reportMode = !is_null($config->getReportPath());
+        $this->reportMode = $config->getReportPath() !== null;
     }
     
     public function scan(): array
@@ -105,9 +104,9 @@ final class Scanner
                 if (empty($this->searchPatterns)) {
                     call_user_func($this->onDirectoryProgress, $total, $total, $filename);
                     break;
-                } else {
-                    call_user_func($this->onDirectoryProgress, $iteration + 1, $total, $filename);
                 }
+
+                call_user_func($this->onDirectoryProgress, $iteration + 1, $total, $filename);
             }
         }
     }
@@ -144,14 +143,7 @@ final class Scanner
             if (in_array($packageName, $usageFounds)) {
                 continue;
             }
-            $preparedDefinition = str_replace('\\', '\\\\', $definition);
-            $pattern = "/[\s\t\n\.\,<=>\'\"\[\(;\\\\]{$preparedDefinition}/";
-            $isMatched = !is_null($this->config->getCustomMatch())
-                ? call_user_func($this->config->getCustomMatch(), $definition, $packageName, $file)
-                : false;
-            if (!$isMatched) {
-                $isMatched = preg_match($pattern, str_replace('\\\\', '\\', $fileContent));
-            }
+            $isMatched = $this->matchDefinition($definition, $packageName, $fileContent, $file);
             if ($isMatched) {
                 $usageFounds[] = $packageName;
             }
@@ -164,14 +156,7 @@ final class Scanner
         $usageFounds = [];
         $fileContent = $file->getContents();
         foreach ($this->searchPatterns as $definition => $packageName) {
-            $preparedDefinition = str_replace('\\', '\\\\', $definition);
-            $pattern = "/[\s\t\n\.\,<=>\'\"\[\(;\\\\]{$preparedDefinition}/";
-            $isMatched = !is_null($this->config->getCustomMatch())
-                ? call_user_func($this->config->getCustomMatch(), $definition, $packageName, $file)
-                : false;
-            if (!$isMatched) {
-                $isMatched = preg_match($pattern, str_replace('\\\\', '\\', $fileContent));
-            }
+            $isMatched = $this->matchDefinition($definition, $packageName, $fileContent, $file);
             if ($isMatched) {
                 $usageFounds[] = $packageName;
                 if($this->reportMode === true){
@@ -198,8 +183,43 @@ final class Scanner
         $this->usageFounds = array_merge($this->usageFounds, $usageFounds);
         if ($this->reportMode !== true) {
             $this->searchPatterns = array_filter($this->searchPatterns, function ($packageName) use (&$usageFounds) {
-                return !in_array($packageName, $usageFounds);
+                return !in_array($packageName, $usageFounds, true);
             });
         }
+    }
+
+    /**
+     * @param                                       $definition
+     * @param                                       $packageName
+     * @param string                                $fileContent
+     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @return bool|false|int|mixed
+     */
+    private function matchDefinition($definition, $packageName, string $fileContent, SplFileInfo $file)
+    {
+        $preparedDefinition = str_replace('\\', '\\\\', $definition);
+        $pattern = "/[\s\t\n\.\,<=>\'\"\[\(;\\\\]{$preparedDefinition}/";
+        $isMatched = $this->config->getCustomMatch() !== null
+            ? call_user_func($this->config->getCustomMatch(), $definition, $packageName, $file)
+            : false;
+        $content =  str_replace('\\\\', '\\', $fileContent);
+        if (!$isMatched) {
+            $isMatched = preg_match($pattern, $content);
+        }
+        if(!$isMatched){
+            $parts = array_filter(\explode('\\', str_replace('\\\\', '\\', $definition)));
+            $partsCount = \count($parts);
+            if($partsCount > 1 && strpos($content, $parts[0].'\\') !== false){
+                $i=1;
+                while ($i < $partsCount && !$isMatched){
+                    $head = \implode('\\\\', \array_slice($parts, 0, $partsCount - $i));
+                    $tail = \implode('\\\\', \array_slice($parts, $partsCount - $i));
+                    $pattern = "~{$head}\\\{[^\{]*{$tail}[^\{]*\}~";
+                    $isMatched = preg_match($pattern, $content);
+                    $i++;
+                }
+            }
+        }
+        return $isMatched;
     }
 }

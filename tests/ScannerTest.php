@@ -113,4 +113,21 @@ class ScannerTest extends TestCase
         sort($founds);
         $this->assertEquals([17, 18], $founds);
     }
+
+    public function testScanGroupedNamespaces()
+    {
+        $config = new Config(__DIR__ . '/../composer.json', __DIR__ . '/../vendor', [__DIR__ . '/stubs2/']);
+        $patterns = [
+            'Symfony\Thanks\GitHubClient' => 0,
+            'Symfony\Thanks\Thanks' => 1,
+            'TheSeer\Tokenizer\NamespaceUri' => 2,
+            'TheSeer\Tokenizer\NamespaceUriException' => 3,
+            'Symfony\Component\Console\Input\ArrayInput' => 4,
+            'TheSeer\Tokenizer\GitHubClient' => 9, //Should be not matched
+        ];
+        $scanner = new Scanner($patterns, $config, new Finder(), function () {}, function () {});
+        $founds = $scanner->scan();
+        sort($founds);
+        $this->assertEquals([0, 1, 2, 3, 4], $founds);
+    }
 }

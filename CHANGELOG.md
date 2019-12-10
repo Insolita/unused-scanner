@@ -1,5 +1,11 @@
+2.1
+
+  - Support namespaces with group use declarations
+  - Ensure php 7.4 support
+  
 2.0.4
   - Symfony 5.0 support
+  
 2.0.3
   - Added ext_mbstring dependency in composer.json
   - Cosmetic changes
