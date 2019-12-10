@@ -1,3 +1,7 @@
+2.1.1
+  - Improve json output format
+  - code style fixes
+
 2.1
 
   - Support namespaces with group use declarations
