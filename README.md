@@ -47,9 +47,7 @@ run `unused_scanner /path/to/configuration/file/scanner_config.php --silent`
 
 **Docker**:
 
- run ```docker run -v `pwd`:/app tico/unused-scanner /app/path/to/configuration/file/scanner_config.php```
-
-wait for result..
+https://github.com/juanmrad/docker-unused-scanner
 
 ![Demo screenshot](unused.png)
 
