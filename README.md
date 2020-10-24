@@ -1,6 +1,6 @@
 # Project scanner for detect unused composer dependencies
 
-[![Build Status](https://travis-ci.org/Insolita/unused-scanner.svg?branch=master)](https://travis-ci.org/Insolita/unused-scanner)
+![unused-scanner](https://github.com/Insolita/unused-scanner/workflows/unused-scanner/badge.svg?branch=master)
 
 ### Versions
 
