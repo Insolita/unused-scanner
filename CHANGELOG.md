@@ -1,3 +1,7 @@
+2.2.0
+  - Fix dev dependencies for composer2.0 compatibility
+  - code typehint fixes
+  
 2.1.1
   - Improve json output format
   - code style fixes
