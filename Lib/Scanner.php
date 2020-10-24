@@ -7,8 +7,12 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function array_filter;
 use function array_merge;
+use function array_slice;
 use function basename;
 use function call_user_func;
+use function count;
+use function explode;
+use function implode;
 use function in_array;
 use function is_dir;
 use function is_file;
@@ -89,7 +93,7 @@ final class Scanner
         return $this->usageReport;
     }
     
-    private function scanAdditionalFiles()
+    private function scanAdditionalFiles():void
     {
         if (!empty($this->searchPatterns) && !empty($this->config->getScanFiles())) {
             call_user_func($this->onNextDirectory, ' additional files');
@@ -111,7 +115,7 @@ final class Scanner
         }
     }
     
-    private function scanDirectory(string $directory)
+    private function scanDirectory(string $directory):void
     {
         $finder = clone $this->finder;
         $files = $finder->files()->in([$directory])->exclude($this->config->getExcludeDirectories());
@@ -125,22 +129,23 @@ final class Scanner
             $this->reportMode === false
                 ? $this->checkUsage($file)
                 : $this->collectUsage($file);
+
             if (empty($this->searchPatterns)) {
                 call_user_func($this->onDirectoryProgress, $total, $total, $file->getRealPath());
                 break;
-            } else {
-                $iteration++;
-                call_user_func($this->onDirectoryProgress, $iteration, $total, $file->getRealPath());
             }
+
+            $iteration++;
+            call_user_func($this->onDirectoryProgress, $iteration, $total, $file->getRealPath());
         }
     }
     
-    private function checkUsage(SplFileInfo $file)
+    private function checkUsage(SplFileInfo $file):void
     {
         $usageFounds = [];
         $fileContent = $file->getContents();
         foreach ($this->searchPatterns as $definition => $packageName) {
-            if (in_array($packageName, $usageFounds)) {
+            if (in_array($packageName, $usageFounds, true)) {
                 continue;
             }
             $isMatched = $this->matchDefinition($definition, $packageName, $fileContent, $file);
@@ -151,7 +156,7 @@ final class Scanner
         $this->registerFounds($usageFounds);
     }
     
-    private function collectUsage(SplFileInfo $file)
+    private function collectUsage(SplFileInfo $file):void
     {
         $usageFounds = [];
         $fileContent = $file->getContents();
@@ -167,7 +172,7 @@ final class Scanner
         $this->registerFounds($usageFounds);
     }
     
-    private function collectFounds(string $packageName, string $definition, string $fileName)
+    private function collectFounds(string $packageName, string $definition, string $fileName):void
     {
         if (!isset($this->usageReport[$packageName])) {
             $this->usageReport[$packageName] = [];
@@ -178,7 +183,7 @@ final class Scanner
         $this->usageReport[$packageName][$definition][] = $fileName;
     }
     
-    private function registerFounds(array $usageFounds)
+    private function registerFounds(array $usageFounds):void
     {
         $this->usageFounds = array_merge($this->usageFounds, $usageFounds);
         if ($this->reportMode !== true) {
@@ -207,13 +212,13 @@ final class Scanner
             $isMatched = preg_match($pattern, $content);
         }
         if(!$isMatched){
-            $parts = array_filter(\explode('\\', str_replace('\\\\', '\\', $definition)));
-            $partsCount = \count($parts);
+            $parts = array_filter(explode('\\', str_replace('\\\\', '\\', $definition)));
+            $partsCount = count($parts);
             if($partsCount > 1 && strpos($content, $parts[0].'\\') !== false){
                 $i=1;
                 while ($i < $partsCount && !$isMatched){
-                    $head = \implode('\\\\', \array_slice($parts, 0, $partsCount - $i));
-                    $tail = \implode('\\\\', \array_slice($parts, $partsCount - $i));
+                    $head = implode('\\\\', array_slice($parts, 0, $partsCount - $i));
+                    $tail = implode('\\\\', array_slice($parts, $partsCount - $i));
                     $pattern = "~{$head}\\\{[^\{]*{$tail}[^\{]*\}~";
                     $isMatched = preg_match($pattern, $content);
                     $i++;
