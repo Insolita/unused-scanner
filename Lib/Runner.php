@@ -16,12 +16,12 @@ use const JSON_UNESCAPED_SLASHES;
 
 final class Runner
 {
-    const SUCCESS_CODE = 0;
-    const GENERAL_ERROR_CODE = 1;
-    const ARGUMENT_ERROR_CODE = 2;
-    const CONFIG_ERROR_CODE = 4;
-    const SCANNING_ERROR_CODE = 8;
-    const HAS_UNUSED_CODE = 16;
+    public const SUCCESS_CODE = 0;
+    public const GENERAL_ERROR_CODE = 1;
+    public const ARGUMENT_ERROR_CODE = 2;
+    public const CONFIG_ERROR_CODE = 4;
+    public const SCANNING_ERROR_CODE = 8;
+    public const HAS_UNUSED_CODE = 16;
     
     /**
      * @var string
@@ -38,11 +38,8 @@ final class Runner
         $this->configFile = $configFile;
         $this->silentMode = $silentMode;
     }
-    
-    /**
-     * @return int
-     */
-    public function run()
+
+    public function run():int
     {
         try {
             $config = $this->makeConfig();
@@ -52,8 +49,7 @@ final class Runner
         } catch (Throwable $e) {
             echo 'Error! ' . $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
-            $exitCode = $e instanceof InvalidConfigException ? self::CONFIG_ERROR_CODE : self::GENERAL_ERROR_CODE;
-            return $exitCode;
+            return $e instanceof InvalidConfigException ? self::CONFIG_ERROR_CODE : self::GENERAL_ERROR_CODE;
         }
         try {
             $scanner = (new Scanner($map, $config, new Finder(), [$this, 'onNextDirectory'], [$this, 'onProgress']));
@@ -69,7 +65,7 @@ final class Runner
         return $this->showScanReport($map, $scanResult);
     }
     
-    public function onNextDirectory(string $directory)
+    public function onNextDirectory(string $directory):void
     {
         $this->output(PHP_EOL . ' - Scan ' . $directory . PHP_EOL);
     }
@@ -94,7 +90,7 @@ final class Runner
         return (new DependencyMapper($config, $dependencies))->build();
     }
     
-    private function output(string $message)
+    private function output(string $message):void
     {
         if ($this->silentMode === false) {
             echo $message;
@@ -110,13 +106,13 @@ final class Runner
         }
 
         $this->output(PHP_EOL . 'Unused dependencies found!' . PHP_EOL);
-        array_walk($result, function ($packageName) {
+        array_walk($result, static function ($packageName) {
             echo ' -' . $packageName . PHP_EOL;
         });
         return self::HAS_UNUSED_CODE;
     }
     
-    private function storeReport(array $usageReport, Config $config)
+    private function storeReport(array $usageReport, Config $config):void
     {
         $formattedReport = $config->getReportFormatter() !== null
             ? (string)call_user_func($config->getReportFormatter(), $usageReport)

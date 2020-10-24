@@ -15,7 +15,7 @@ final class Config
 {
     private $composerJsonPath;
     private $vendorPath;
-    private $scanDirectories = [];
+    private $scanDirectories;
     private $excludeDirectories = [];
     
     private $skipPackages = [];
@@ -35,7 +35,7 @@ final class Config
         }
         $this->composerJsonPath = $composerJsonPath;
         $this->vendorPath = realpath(rtrim($vendorPath, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
-        $this->scanDirectories = array_map(function ($path) {
+        $this->scanDirectories = array_map(static function ($path) {
             return realpath(rtrim($path, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
         }, $scanDirectories);
     }

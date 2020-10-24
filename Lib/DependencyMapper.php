@@ -68,7 +68,7 @@ final class DependencyMapper
             []);
     }
     
-    private function addToMap($definition, $packageName)
+    private function addToMap($definition, $packageName):void
     {
         $this->map[$definition] = $packageName;
     }
