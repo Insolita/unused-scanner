@@ -1,0 +1,91 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Process;
+
+$pharFile = 'unused_scanner.phar';
+
+if (file_exists($pharFile)) {
+    unlink($pharFile);
+}
+
+$process = new Process([
+    'composer',
+    'install',
+    '--no-dev',
+]);
+$process->mustRun();
+
+$phar = new \Phar($pharFile, 0, 'unused_scanner.phar');
+$phar->setSignatureAlgorithm(\Phar::SHA1);
+$phar->startBuffering();
+
+$finder = new Finder();
+$finder->files()
+    ->ignoreVCS(true)
+    ->name('*.php')
+    ->in([
+        __DIR__.'/Exceptions',
+        __DIR__.'/Lib',
+    ])
+;
+foreach ($finder as $file) {
+    $phar->addFromString(relativePath($file), file_get_contents($file));
+}
+
+$finder = new Finder();
+$finder->files()
+    ->ignoreVCS(true)
+    ->name('*.php')
+    ->exclude('Tests')
+    ->exclude('tests')
+    ->exclude('docs')
+    ->in(__DIR__.'/vendor')
+;
+
+foreach ($finder as $file) {
+    $phar->addFromString(relativePath($file), file_get_contents($file));
+}
+
+$content = file_get_contents(__DIR__.'/unused_scanner');
+$content = preg_replace('{^#!/usr/bin/env php\s*}', '', $content);
+$phar->addFromString('unused_scanner', $content);
+
+$phar->setStub(stub());
+
+$phar->stopBuffering();
+
+chmod($pharFile, 0755);
+
+$process = new Process([
+    'composer',
+    'install',
+]);
+$process->mustRun();
+
+function relativePath(\SplFileInfo $file)
+{
+    $realPath = $file->getRealPath();
+    $pathPrefix = __DIR__.DIRECTORY_SEPARATOR;
+
+    $pos = strpos($realPath, $pathPrefix);
+    $relativePath = ($pos !== false) ? substr_replace($realPath, '', $pos, strlen($pathPrefix)) : $realPath;
+
+    return strtr($relativePath, '\\', '/');
+}
+
+function stub()
+{
+    $stub = <<<'EOF'
+#!/usr/bin/env php
+<?php
+Phar::mapPhar('unused_scanner.phar');
+EOF;
+
+    return $stub . <<<'EOF'
+require 'phar://unused_scanner.phar/unused_scanner';
+__HALT_COMPILER();
+EOF;
+}

@@ -16,6 +16,7 @@
         "ext-json":       "*" ,
         "ext-mbstring":   "*" ,
         "symfony/finder": "^3.4|^4.0|^5.0" ,
+        "symfony/process": "^3.4|^4.0|^5.0",
         "nesbot/carbon":  ">=1.22"
     } ,
     "require-dev":       {

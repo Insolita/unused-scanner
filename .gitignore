@@ -5,3 +5,4 @@ composer.lock
 tests/reports/*.txt
 tests/reports/*.json
 .phpunit.result.cache
+unused_scanner.phar
