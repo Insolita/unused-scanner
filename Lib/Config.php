@@ -35,9 +35,9 @@ final class Config
         }
         $this->composerJsonPath = $composerJsonPath;
         $this->vendorPath = realpath(rtrim($vendorPath, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
-        $this->scanDirectories = array_map(static function ($path) {
-            return realpath(rtrim($path, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR;
-        }, $scanDirectories);
+        $this->scanDirectories = array_filter(array_map(static function ($path) {
+            return realpath(rtrim($path, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR);
+        }, $scanDirectories));
     }
     
     public function getComposerJsonPath(): string
