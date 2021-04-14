@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace insolita\Scanner\Lib;
 
-use Carbon\Carbon;
 use insolita\Scanner\Exceptions\InvalidConfigException;
 use Symfony\Component\Finder\Finder;
 use Throwable;
@@ -120,7 +119,7 @@ final class Runner
         $reportFileName = sprintf(
             '%spackage_usage_report_%s%s',
             $config->getReportPath(),
-            Carbon::now()->format('Y-m-d_H_i'),
+            date('Y-m-d_H_i'),
             $config->getReportExtension()
         );
         file_put_contents($reportFileName, $formattedReport);

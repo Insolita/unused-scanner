@@ -1,4 +1,5 @@
 <?php
+namespace tests;
 
 use insolita\Scanner\Lib\Config;
 use insolita\Scanner\Lib\Scanner;
