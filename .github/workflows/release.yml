@@ -1,4 +1,5 @@
 name: release
+on: workflow_dispatch
 # on:
 #   push:
 #     tags:
