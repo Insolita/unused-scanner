@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php
+$VERSION = '2.3';
 /**
  * Project scanner for detect unused composer dependencies
  * Usage:
  *  - composer global require insolita/unused-scanner
  *  - prepare config like in example @see scanner_config.example.php
  *  - run 'composer dumpautoload' in project root
- *  - unused_scanner /path/to/scanner_config.php
+ *  - unused_scanner [options] /path/to/scanner_config.php
  **/
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
@@ -17,12 +18,23 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 use insolita\Scanner\Lib\Runner;
 
 $defaultConfigPath = getcwd() . DIRECTORY_SEPARATOR . 'scanner_config.php';
+$optIndex = null;
 
-$configPath = $argv[1] ?? null;
+if ($argc > 1 && strpos($argv[1] ?? '', '-') !== 0) {
+    $configPath = $argv[1];
+    $args = array_slice($argv, 1);
+    $silentMode = in_array('-s', $args, true) || in_array('--silent', $args, true);
+    $showVersion = in_array('--version', $args, true);
+} else {
+    $options = getopt('s', ['silent', 'version'], $optIndex);
+    $configPath = (int)$optIndex < $argc && $argc > 1 ? array_slice($argv, $optIndex)[0] : null;
+    $silentMode = isset($options['s']) || isset($options['silent']);
+    $showVersion = isset($options['version']);
+}
 
-if (in_array($configPath, ['--silent', '-s'])) {
-    $configPath = null;
-    $silentMode = true;
+if ($showVersion) {
+    echo $VERSION . PHP_EOL;
+    exit(Runner::SUCCESS_CODE);
 }
 
 if (!$configPath && file_exists($defaultConfigPath)) {
@@ -33,8 +45,10 @@ if (!$configPath) {
     echo 'Missing required argument - path to config' . PHP_EOL;
     exit(Runner::ARGUMENT_ERROR_CODE);
 }
-if (!isset($silentMode)) {
-    $silentMode = isset($argv[2]) && in_array($argv[2], ['--silent', '-s']);
+
+if (!file_exists($configPath)) {
+    echo 'Configuration file "' . $configPath . '" not found' . PHP_EOL;
+    exit(Runner::ARGUMENT_ERROR_CODE);
 }
 
 $exitCode = (new Runner((string)$configPath, $silentMode))->run();
