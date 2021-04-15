@@ -37,8 +37,14 @@ jobs:
       - name: Install Box
         run: composer global require humbug/box
 
+      - name: Validate config
+        run: box validate || exit 1
+
       - name: Phar building
-        run: chmod +x .github/builder.sh && .github/builder.sh
+        run: box compile -v || exit 1
+
+      - name: Phar test
+        run: test -f "./unused_scanner.phar" || exit 1
 
       - name: Getting Tag Name
         id: get-version
