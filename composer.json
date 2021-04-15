@@ -29,7 +29,7 @@
         "psr-4": {
             "insolita\\Scanner\\Lib\\": "Lib" ,
             "insolita\\Scanner\\Exceptions\\": "Exceptions",
-            "tests": "tests"
+            "tests\\": "tests"
         }
     } ,
     "extra": {

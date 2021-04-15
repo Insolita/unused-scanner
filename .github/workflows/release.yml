@@ -1,0 +1,58 @@
+name: release
+# on:
+#   push:
+#     tags:
+#       - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.1'
+          extensions: intl, zip, zlib, mbstring
+          coverage: none
+          ini-values: memory_limit=1G, phar.readonly=0
+
+      - name: Get composer cache directory
+        id: composer_release_cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache Composer packages
+        id: composer-release-cache
+        uses: actions/cache@v2
+        with:
+            path: ${{ steps.composer_release_cache.outputs.dir }}
+            key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
+            restore-keys: |
+              ${{ runner.os }}-php-
+
+      - name: Install
+        run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
+
+      - name: Install Box
+        run: composer global require humbug/box
+
+      - name: Phar building
+        run: .github/builder.sh
+
+      - name: Getting Tag Name
+        id: get-version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+
+      - name: Self-Test
+        run: ./unused_scanner.phar --version
+
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ steps.get-version.outputs.version }}
+          tag: ${{ steps.get-version.outputs.version }}
+          body: 'Next stable release.'
+          allowUpdates: true
+          artifacts: unused_scanner.phar
+          artifactContentType: application/x-php

@@ -1,0 +1,8 @@
+{
+    "chmod":       "0755" ,
+    "directories": [ "Lib" , "Exceptions" , "vendor" ] ,
+    "files":       [ "README.md" ] ,
+    "main":        "unused_scanner" ,
+    "output":      "unused_scanner.phar" ,
+    "stub":        true
+}
