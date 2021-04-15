@@ -1,9 +1,9 @@
 name: release
-on: workflow_dispatch
-# on:
-#   push:
-#     tags:
-#       - '*'
+# on: workflow_dispatch
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:

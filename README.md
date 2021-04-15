@@ -43,7 +43,7 @@ by default
 
 Add --silent option for skip progress output and return exit code = 16, when unused packages detected
 
-run `unused_scanner /path/to/configuration/file/scanner_config.php --silent`
+run `unused_scanner --silent /path/to/configuration/file/scanner_config.php`
 
 **Docker**:
 

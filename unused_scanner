@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-$VERSION = '2.3';
+$VERSION = '2.3.0';
 /**
  * Project scanner for detect unused composer dependencies
  * Usage:
