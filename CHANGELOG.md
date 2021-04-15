@@ -1,9 +1,13 @@
 2.3.0
 
-- Fix #34
-- Fix #36, #37
+- Fix [#34](https://github.com/Insolita/unused-scanner/issues/34)
+- Fix [#36](https://github.com/Insolita/unused-scanner/issues/36)
+  [#37](https://github.com/Insolita/unused-scanner/issues/37)
 - Add support --version option
-- Fix #33 - now .phar builds available 2.2.0
+- Fix [#33](https://github.com/Insolita/unused-scanner/issues/33) - now .phar builds available
+
+2.2.0
+
 - Fix dev dependencies for composer2.0 compatibility
 - code typehint fixes
 
