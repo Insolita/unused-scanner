@@ -19,17 +19,17 @@ jobs:
           ini-values: memory_limit=1G, phar.readonly=0
 
       - name: Get composer cache directory
-        id: composer_release_cache
+        id: composer_release_cachedir
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache Composer packages
         id: composer-release-cache
         uses: actions/cache@v2
         with:
-            path: ${{ steps.composer_release_cache.outputs.dir }}
-            key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
+            path: ${{ steps.composer_release_cachedir.outputs.dir }}
+            key: ${{ runner.os }}-release-${{ hashFiles('**/composer.json') }}
             restore-keys: |
-              ${{ runner.os }}-php-
+              ${{ runner.os }}-release-
 
       - name: Install
         run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-dev
@@ -38,7 +38,7 @@ jobs:
         run: composer global require humbug/box
 
       - name: Validate config
-        run: box validate || exit 1
+        run: box validate -i || exit 1
 
       - name: Phar building
         run: box compile -v || exit 1
