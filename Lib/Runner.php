@@ -105,9 +105,10 @@ final class Runner
         }
 
         $this->output(PHP_EOL . 'Unused dependencies found!' . PHP_EOL);
-        array_walk($result, static function ($packageName) {
-            echo ' -' . $packageName . PHP_EOL;
-        });
+        array_walk($result,
+            function($packageName) {
+                $this->output(' -' . $packageName . PHP_EOL);
+            });
         return self::HAS_UNUSED_CODE;
     }
     
