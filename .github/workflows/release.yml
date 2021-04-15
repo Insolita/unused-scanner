@@ -32,13 +32,13 @@ jobs:
               ${{ runner.os }}-php-
 
       - name: Install
-        run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
+        run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-dev
 
       - name: Install Box
         run: composer global require humbug/box
 
       - name: Phar building
-        run: .github/builder.sh
+        run: chmod +x .github/builder.sh && .github/builder.sh
 
       - name: Getting Tag Name
         id: get-version
