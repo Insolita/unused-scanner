@@ -1,3 +1,6 @@
+2.4.0
+ - Add Symfony 6 support
+
 2.3.0
 
 - Fix [#34](https://github.com/Insolita/unused-scanner/issues/34)
