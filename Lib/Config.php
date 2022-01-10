@@ -126,7 +126,7 @@ final class Config
     /**
      * @return null|callable
      */
-    public function getCustomMatch():?callable
+    public function getCustomMatch(): ?callable
     {
         return $this->customMatch;
     }
@@ -136,7 +136,7 @@ final class Config
      *
      * @return Config
      */
-    public function setCustomMatch(callable $customMatch):Config
+    public function setCustomMatch(callable $customMatch): Config
     {
         $this->customMatch = $customMatch;
         return $this;
@@ -147,13 +147,13 @@ final class Config
      *
      * @return Config
      */
-    public function setReportPath(string $reportPath):Config
+    public function setReportPath(string $reportPath): Config
     {
         $this->reportPath = $reportPath;
         return $this;
     }
     
-    public function getReportPath():?string
+    public function getReportPath(): ?string
     {
         return $this->reportPath;
     }
@@ -163,13 +163,13 @@ final class Config
      *
      * @return Config
      */
-    public function setReportFormatter(callable $reportFormatter):Config
+    public function setReportFormatter(callable $reportFormatter): Config
     {
         $this->reportFormatter = $reportFormatter;
         return $this;
     }
     
-    public function getReportFormatter():?callable
+    public function getReportFormatter(): ?callable
     {
         return $this->reportFormatter;
     }
