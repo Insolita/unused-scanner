@@ -91,6 +91,6 @@ return [
      *     return print_r($report, true);
      * }
      **/
-    'reportFormatter'=>null,
-    'reportExtension'=>null, //by default - json, set own, if use custom formatter
+    'reportFormatter' => null,
+    'reportExtension' => null, //by default - json, set own, if use custom formatter
 ];

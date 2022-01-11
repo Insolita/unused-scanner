@@ -38,7 +38,7 @@ final class Runner
         $this->silentMode = $silentMode;
     }
 
-    public function run():int
+    public function run(): int
     {
         try {
             $config = $this->makeConfig();
@@ -64,12 +64,12 @@ final class Runner
         return $this->showScanReport($map, $scanResult);
     }
     
-    public function onNextDirectory(string $directory):void
+    public function onNextDirectory(string $directory): void
     {
         $this->output(PHP_EOL . ' - Scan ' . $directory . PHP_EOL);
     }
     
-    public function onProgress(int $done, int $total)
+    public function onProgress(int $done, int $total): void
     {
         $width = 60;
         $percentage = round(($done * 100) / ($total <= 0 ? 1 : $total));
@@ -89,7 +89,7 @@ final class Runner
         return (new DependencyMapper($config, $dependencies))->build();
     }
     
-    private function output(string $message):void
+    private function output(string $message): void
     {
         if ($this->silentMode === false) {
             echo $message;
@@ -112,7 +112,7 @@ final class Runner
         return self::HAS_UNUSED_CODE;
     }
     
-    private function storeReport(array $usageReport, Config $config):void
+    private function storeReport(array $usageReport, Config $config): void
     {
         $formattedReport = $config->getReportFormatter() !== null
             ? (string)call_user_func($config->getReportFormatter(), $usageReport)

@@ -93,7 +93,7 @@ final class Scanner
         return $this->usageReport;
     }
     
-    private function scanAdditionalFiles():void
+    private function scanAdditionalFiles(): void
     {
         if (!empty($this->searchPatterns) && !empty($this->config->getScanFiles())) {
             call_user_func($this->onNextDirectory, ' additional files');
@@ -115,7 +115,7 @@ final class Scanner
         }
     }
     
-    private function scanDirectory(string $directory):void
+    private function scanDirectory(string $directory): void
     {
         $finder = clone $this->finder;
         $files = $finder->files()->in([$directory])->exclude($this->config->getExcludeDirectories());
@@ -140,7 +140,7 @@ final class Scanner
         }
     }
     
-    private function checkUsage(SplFileInfo $file):void
+    private function checkUsage(SplFileInfo $file): void
     {
         $usageFounds = [];
         $fileContent = $file->getContents();
@@ -156,7 +156,7 @@ final class Scanner
         $this->registerFounds($usageFounds);
     }
     
-    private function collectUsage(SplFileInfo $file):void
+    private function collectUsage(SplFileInfo $file): void
     {
         $usageFounds = [];
         $fileContent = $file->getContents();
@@ -172,7 +172,7 @@ final class Scanner
         $this->registerFounds($usageFounds);
     }
     
-    private function collectFounds(string $packageName, string $definition, string $fileName):void
+    private function collectFounds(string $packageName, string $definition, string $fileName): void
     {
         if (!isset($this->usageReport[$packageName])) {
             $this->usageReport[$packageName] = [];
@@ -183,7 +183,7 @@ final class Scanner
         $this->usageReport[$packageName][$definition][] = $fileName;
     }
     
-    private function registerFounds(array $usageFounds):void
+    private function registerFounds(array $usageFounds): void
     {
         $this->usageFounds = array_merge($this->usageFounds, $usageFounds);
         if ($this->reportMode !== true) {
@@ -211,11 +211,11 @@ final class Scanner
         if (!$isMatched) {
             $isMatched = preg_match($pattern, $content);
         }
-        if(!$isMatched){
+        if (!$isMatched) {
             $parts = array_filter(explode('\\', str_replace('\\\\', '\\', $definition)));
             $partsCount = count($parts);
             if($partsCount > 1 && strpos($content, $parts[0].'\\') !== false){
-                $i=1;
+                $i = 1;
                 while ($i < $partsCount && !$isMatched){
                     $head = implode('\\\\', array_slice($parts, 0, $partsCount - $i));
                     $tail = implode('\\\\', array_slice($parts, $partsCount - $i));
