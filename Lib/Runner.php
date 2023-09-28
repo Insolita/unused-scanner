@@ -31,11 +31,17 @@ final class Runner
      * @var bool
      */
     private $silentMode;
+
+    /**
+     * @var bool
+     */
+    private $noProgress;
     
-    public function __construct(string $configFile, bool $silentMode)
+    public function __construct(string $configFile, bool $silentMode, bool $noProgress)
     {
         $this->configFile = $configFile;
         $this->silentMode = $silentMode;
+        $this->noProgress = $noProgress;
     }
 
     public function run(): int
@@ -71,6 +77,10 @@ final class Runner
     
     public function onProgress(int $done, int $total): void
     {
+        if ($this->noProgress === true) {
+            return;
+        }
+
         $width = 60;
         $percentage = round(($done * 100) / ($total <= 0 ? 1 : $total));
         $bar = (int)round(($width * $percentage) / 100);
