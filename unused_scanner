@@ -24,11 +24,13 @@ if ($argc > 1 && strpos($argv[1] ?? '', '-') !== 0) {
     $configPath = $argv[1];
     $args = array_slice($argv, 1);
     $silentMode = in_array('-s', $args, true) || in_array('--silent', $args, true);
+    $noProgress = in_array('--no-progress', $args, true);
     $showVersion = in_array('--version', $args, true);
 } else {
-    $options = getopt('s', ['silent', 'version'], $optIndex);
+    $options = getopt('s', ['silent', 'version', 'no-progress'], $optIndex);
     $configPath = (int)$optIndex < $argc && $argc > 1 ? array_slice($argv, $optIndex)[0] : null;
     $silentMode = isset($options['s']) || isset($options['silent']);
+    $noProgress = isset($options['no-progress']);
     $showVersion = isset($options['version']);
 }
 
@@ -51,7 +53,6 @@ if (!file_exists($configPath)) {
     exit(Runner::ARGUMENT_ERROR_CODE);
 }
 
-$exitCode = (new Runner((string)$configPath, $silentMode))->run();
+$exitCode = (new Runner((string)$configPath, $silentMode, $noProgress))->run();
 
 exit($exitCode);
-
